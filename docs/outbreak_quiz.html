@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 10 Quiz: Instant Feedback</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .correct { border-color: #10b981; background-color: #ecfdf5; }
+        .wrong { border-color: #ef4444; background-color: #fef2f2; }
+        /* Smooth fade in for feedback */
+        .feedback { transition: opacity 0.3s ease-in; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen py-10">
+
+    <div class="max-w-2xl mx-auto px-4">
+        
+        <header class="mb-8 text-center sticky top-0 bg-slate-100 py-4 z-10 border-b border-slate-200 relative">
+            <!-- Back Link Positioned Absolutely -->
+            <a href="index.html" class="hidden sm:inline-block absolute left-0 top-1/2 -translate-y-1/2 text-sm text-slate-500 hover:text-slate-900 transition-colors">
+                ← Back
+            </a>
+            
+            <h1 class="text-3xl font-bold text-slate-900">Week 10 Knowledge Check</h1>
+            <p class="text-slate-500 mt-1">Topic: Outbreak Investigation</p>
+            
+            <div class="mt-4 flex justify-center gap-4 text-sm font-semibold">
+                <div class="px-4 py-1 bg-white rounded-full border border-slate-200 shadow-sm">
+                    Score: <span id="currentScore" class="text-emerald-600">0</span> / 5
+                </div>
+                <button onclick="location.reload()" class="text-sky-600 hover:underline">Reset Quiz</button>
+            </div>
+
+            <!-- Mobile Back Link (Visible only on small screens) -->
+            <a href="index.html" class="sm:hidden block mt-4 text-sm text-slate-500">← Back to Course</a>
+        </header>
+
+        <form id="quizForm" class="space-y-6 pb-20">
+
+            <!-- Question 1 -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 question-card transition-colors duration-300" data-correct="b">
+                <h3 class="font-bold text-lg mb-3">1. Which term describes cases occurring in excess of expected numbers for a given place and time?</h3>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors option-label">
+                        <input type="radio" name="q1" value="a" class="h-4 w-4 text-sky-600 focus:ring-sky-500">
+                        <span>Cluster</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors option-label">
+                        <input type="radio" name="q1" value="b" class="h-4 w-4 text-sky-600 focus:ring-sky-500">
+                        <span>Outbreak</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors option-label">
+                        <input type="radio" name="q1" value="c" class="h-4 w-4 text-sky-600 focus:ring-sky-500">
+                        <span>Endemic</span>
+                    </label>
+                </div>
+                <div class="feedback hidden mt-4 p-3 rounded-lg text-sm font-medium border"></div>
+            </div>
+
+            <!-- Question 2 -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 question-card transition-colors duration-300" data-correct="c">
+                <h3 class="font-bold text-lg mb-3">2. In an outbreak investigation, what usually happens *before* you formulate a hypothesis?</h3>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors option-label">
+                        <input type="radio" name="q2" value="a" class="h-4 w-4 text-sky-600 focus:ring-sky-500">
+                        <span>Conduct a Case-Control study</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors option-label">
+                        <input type="radio" name="q2" value="b" class="h-4 w-4 text-sky-600 focus:ring-sky-500">
+                        <span>Implement long-term policy changes</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors option-label">
+                        <input type="radio" name="q2" value="c" class="h-4 w-4 text-sky-600 focus:ring-sky-500">
+                        <span>Descriptive Epidemiology (Person, Place, Time)</span>
+                    </label>
+                </div>
+                <div class="feedback hidden mt-4 p-3 rounded-lg text-sm font-medium border"></div>
+            </div>
+
+            <!-- Question 3 -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 question-card transition-colors duration-300" data-correct="a">
+                <h3 class="font-bold text-lg mb-3">3. An epi curve showing a sharp rise and rapid fall, with all cases occurring within one incubation period, suggests:</h3>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors option-label">
+                        <input type="radio" name="q3" value="a" class="h-4 w-4 text-sky-600 focus:ring-sky-500">
+                        <span>Point Source exposure</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors option-label">
+                        <input type="radio" name="q3" value="b" class="h-4 w-4 text-sky-600 focus:ring-sky-500">
+                        <span>Continuous Common Source exposure</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors option-label">
+                        <input type="radio" name="q3" value="c" class="h-4 w-4 text-sky-600 focus:ring-sky-500">
+                        <span>Propagated transmission</span>
+                    </label>
+                </div>
+                <div class="feedback hidden mt-4 p-3 rounded-lg text-sm font-medium border"></div>
+            </div>
+
+            <!-- Question 4 -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 question-card transition-colors duration-300" data-correct="b">
+                <h3 class="font-bold text-lg mb-3">4. Which study design is best for a well-defined population (e.g., guests at a wedding banquet)?</h3>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors option-label">
+                        <input type="radio" name="q4" value="a" class="h-4 w-4 text-sky-600 focus:ring-sky-500">
+                        <span>Case-Control Study</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors option-label">
+                        <input type="radio" name="q4" value="b" class="h-4 w-4 text-sky-600 focus:ring-sky-500">
+                        <span>Retrospective Cohort Study</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors option-label">
+                        <input type="radio" name="q4" value="c" class="h-4 w-4 text-sky-600 focus:ring-sky-500">
+                        <span>Ecological Study</span>
+                    </label>
+                </div>
+                <div class="feedback hidden mt-4 p-3 rounded-lg text-sm font-medium border"></div>
+            </div>
+
+             <!-- Question 5 -->
+             <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 question-card transition-colors duration-300" data-correct="a">
+                <h3 class="font-bold text-lg mb-3">5. Why do we create a "Line List"?</h3>
+                <div class="space-y-2">
+                    <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors option-label">
+                        <input type="radio" name="q5" value="a" class="h-4 w-4 text-sky-600 focus:ring-sky-500">
+                        <span>To systematically record key data (who, where, when) for every case.</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors option-label">
+                        <input type="radio" name="q5" value="b" class="h-4 w-4 text-sky-600 focus:ring-sky-500">
+                        <span>To calculate the P-value immediately.</span>
+                    </label>
+                    <label class="flex items-center space-x-3 p-3 rounded-lg border border-slate-200 hover:bg-slate-50 cursor-pointer transition-colors option-label">
+                        <input type="radio" name="q5" value="c" class="h-4 w-4 text-sky-600 focus:ring-sky-500">
+                        <span>To report budget expenses for the investigation.</span>
+                    </label>
+                </div>
+                <div class="feedback hidden mt-4 p-3 rounded-lg text-sm font-medium border"></div>
+            </div>
+
+        </form>
+
+    </div>
+
+    <script>
+        // Use event delegation to handle clicks efficiently
+        document.getElementById('quizForm').addEventListener('change', function(e) {
+            if (e.target.type === 'radio') {
+                handleSelection(e.target);
+            }
+        });
+
+        let currentScore = 0;
+
+        function handleSelection(input) {
+            const card = input.closest('.question-card');
+            const feedback = card.querySelector('.feedback');
+            const correctValue = card.dataset.correct;
+            const selectedValue = input.value;
+            const allInputs = card.querySelectorAll('input[type="radio"]');
+
+            // Prevent changing answer once selected
+            allInputs.forEach(inp => inp.disabled = true);
+
+            // Remove hidden class
+            feedback.classList.remove('hidden');
+
+            if (selectedValue === correctValue) {
+                // Correct Logic
+                currentScore++;
+                document.getElementById('currentScore').textContent = currentScore;
+                
+                card.classList.add('correct');
+                feedback.classList.add('bg-emerald-100', 'border-emerald-200', 'text-emerald-800');
+                feedback.innerHTML = `<span class="font-bold">✅ Correct!</span> Good job.`;
+            } else {
+                // Incorrect Logic
+                card.classList.add('wrong');
+                feedback.classList.add('bg-rose-100', 'border-rose-200', 'text-rose-800');
+                
+                // Find the correct label text to show the user
+                let correctLabelText = "";
+                allInputs.forEach(inp => {
+                    if (inp.value === correctValue) {
+                        correctLabelText = inp.nextElementSibling.textContent;
+                        // Highlight the correct answer visually even if they got it wrong
+                        inp.closest('.option-label').classList.add('bg-emerald-50', 'border-emerald-200');
+                    }
+                });
+
+                feedback.innerHTML = `<span class="font-bold">❌ Incorrect.</span> The correct answer was: <em>${correctLabelText}</em>`;
+            }
+        }
+    </script>
+</body>
+</html>

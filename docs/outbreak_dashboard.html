@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outbreak Investigation Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Inter', sans-serif; }</style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <header class="bg-slate-900 text-white p-4 shadow-md">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-rose-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                Outbreak Field Dashboard
+            </h1>
+            <a href="index.html" class="text-sm text-slate-400 hover:text-white transition-colors">← Back to Course</a>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-6xl mx-auto w-full p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Left Column: Controls -->
+        <div class="lg:col-span-1 space-y-6">
+            
+            <!-- Epi Curve Generator -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <span class="bg-rose-100 text-rose-600 p-1 rounded">1</span>
+                    Curve Simulator
+                </h2>
+                <p class="text-xs text-slate-500 mb-4">Select a scenario to visualize the classic Epi Curve patterns.</p>
+                
+                <div class="space-y-3">
+                    <button onclick="loadScenario('point')" class="w-full text-left px-4 py-3 rounded-lg border border-slate-200 hover:border-rose-400 hover:bg-rose-50 transition-all group">
+                        <div class="font-semibold text-sm text-slate-700 group-hover:text-rose-700">Point Source</div>
+                        <div class="text-xs text-slate-500">Single event (e.g., Wedding lunch)</div>
+                    </button>
+                    <button onclick="loadScenario('continuous')" class="w-full text-left px-4 py-3 rounded-lg border border-slate-200 hover:border-rose-400 hover:bg-rose-50 transition-all group">
+                        <div class="font-semibold text-sm text-slate-700 group-hover:text-rose-700">Continuous Source</div>
+                        <div class="text-xs text-slate-500">Ongoing leak (e.g., Contaminated well)</div>
+                    </button>
+                    <button onclick="loadScenario('propagated')" class="w-full text-left px-4 py-3 rounded-lg border border-slate-200 hover:border-rose-400 hover:bg-rose-50 transition-all group">
+                        <div class="font-semibold text-sm text-slate-700 group-hover:text-rose-700">Propagated</div>
+                        <div class="text-xs text-slate-500">Person-to-person (e.g., Measles)</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 2x2 Calculator -->
+            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+                <h2 class="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
+                    <span class="bg-sky-100 text-sky-600 p-1 rounded">2</span>
+                    Epi Calculator
+                </h2>
+                <div class="grid grid-cols-3 gap-2 text-center text-sm mb-2">
+                    <div></div>
+                    <div class="font-semibold text-rose-600">Sick</div>
+                    <div class="font-semibold text-emerald-600">Well</div>
+                </div>
+                <div class="grid grid-cols-3 gap-2 items-center mb-2">
+                    <div class="text-xs font-bold text-right text-slate-600">Exposed</div>
+                    <input type="number" id="a" value="40" class="border border-slate-300 rounded p-1 text-center focus:ring-2 focus:ring-sky-500 outline-none">
+                    <input type="number" id="b" value="10" class="border border-slate-300 rounded p-1 text-center focus:ring-2 focus:ring-sky-500 outline-none">
+                </div>
+                <div class="grid grid-cols-3 gap-2 items-center mb-4">
+                    <div class="text-xs font-bold text-right text-slate-600">Unexposed</div>
+                    <input type="number" id="c" value="5" class="border border-slate-300 rounded p-1 text-center focus:ring-2 focus:ring-sky-500 outline-none">
+                    <input type="number" id="d" value="45" class="border border-slate-300 rounded p-1 text-center focus:ring-2 focus:ring-sky-500 outline-none">
+                </div>
+                <button onclick="calculate()" class="w-full bg-slate-800 text-white py-2 rounded-lg hover:bg-slate-700 transition-colors font-medium text-sm">Calculate Risk</button>
+                
+                <div id="resultBox" class="mt-4 hidden bg-slate-50 p-3 rounded border border-slate-200">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span>Risk Ratio (RR):</span>
+                        <span id="rrVal" class="font-bold text-slate-900"></span>
+                    </div>
+                    <div class="flex justify-between text-sm">
+                        <span>Odds Ratio (OR):</span>
+                        <span id="orVal" class="font-bold text-slate-900"></span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Column: Visualization -->
+        <div class="lg:col-span-2 bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col">
+            <h2 class="text-lg font-bold text-slate-800 mb-2">Epi Curve Visualization</h2>
+            <p id="chartDesc" class="text-sm text-slate-500 mb-6">Select a scenario on the left to see the pattern.</p>
+            <div class="flex-grow relative h-80 w-full">
+                <canvas id="epiChart"></canvas>
+            </div>
+            <div class="mt-4 p-4 bg-yellow-50 text-yellow-800 text-sm rounded-lg border border-yellow-200">
+                <strong>Interpreter's Note:</strong> <span id="chartNote">Waiting for data...</span>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // --- 1. Epi Curve Logic ---
+        let epiChart;
+
+        const scenarios = {
+            point: {
+                label: 'Cases of Salmonellosis',
+                data: [0, 2, 15, 38, 12, 4, 1, 0, 0, 0, 0, 0],
+                desc: 'A classic Point Source curve. Notice the sharp upward slope, a distinct peak, and a rapid decline. All cases likely occurred within one incubation period.',
+                note: 'Action: Look for a single event (e.g., a wedding, a funeral feast) that happened shortly before the spike.'
+            },
+            continuous: {
+                label: 'Cases of Cholera',
+                data: [0, 2, 5, 12, 14, 13, 15, 12, 14, 11, 13, 8],
+                desc: 'A Continuous Common Source curve. The cases rise but then plateau or continue irregularly because the exposure is ongoing.',
+                note: 'Action: The source is still active (e.g., a contaminated community well). Immediate control (e.g., chlorination/closure) is needed to stop the tail.'
+            },
+            propagated: {
+                label: 'Cases of Measles',
+                data: [0, 1, 0, 0, 3, 5, 2, 8, 15, 22, 18, 30],
+                desc: 'A Propagated curve. Notice the series of progressively larger peaks. Each peak represents a new "generation" of cases infected by the previous group.',
+                note: 'Action: This is person-to-person spread. Isolation and vaccination are critical to break the chain of transmission.'
+            }
+        };
+
+        function loadScenario(type) {
+            const ctx = document.getElementById('epiChart').getContext('2d');
+            const scen = scenarios[type];
+
+            document.getElementById('chartDesc').textContent = scen.desc;
+            document.getElementById('chartNote').textContent = scen.note;
+
+            if (epiChart) epiChart.destroy();
+
+            epiChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7', 'Day 8', 'Day 9', 'Day 10', 'Day 11', 'Day 12'],
+                    datasets: [{
+                        label: scen.label,
+                        data: scen.data,
+                        backgroundColor: type === 'point' ? '#f43f5e' : (type === 'continuous' ? '#0ea5e9' : '#8b5cf6'),
+                        borderWidth: 0,
+                        barPercentage: 1.0, 
+                        categoryPercentage: 1.0 
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: 'Number of Cases' } },
+                        x: { title: { display: true, text: 'Date of Onset' } }
+                    }
+                }
+            });
+        }
+
+        // Initialize with point source
+        loadScenario('point');
+
+
+        // --- 2. Calculator Logic ---
+        function calculate() {
+            const a = parseFloat(document.getElementById('a').value);
+            const b = parseFloat(document.getElementById('b').value);
+            const c = parseFloat(document.getElementById('c').value);
+            const d = parseFloat(document.getElementById('d').value);
+
+            if (isNaN(a) || isNaN(b) || isNaN(c) || isNaN(d)) return;
+
+            // Risk Ratio: (a / (a+b)) / (c / (c+d))
+            const riskExposed = a / (a + b);
+            const riskUnexposed = c / (c + d);
+            const rr = (riskUnexposed === 0) ? 'Undefined' : (riskExposed / riskUnexposed).toFixed(2);
+
+            // Odds Ratio: (a * d) / (b * c)
+            const or = (b * c === 0) ? 'Undefined' : ((a * d) / (b * c)).toFixed(2);
+
+            document.getElementById('rrVal').textContent = rr;
+            document.getElementById('orVal').textContent = or;
+            document.getElementById('resultBox').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 10 Handout: Outbreak Investigation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        h1, h2, h3 { font-family: 'Merriweather', serif; }
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 py-10 px-4">
+
+    <article class="max-w-3xl mx-auto bg-white shadow-lg rounded-xl overflow-hidden border border-slate-200">
+        
+        <!-- Header -->
+        <header class="bg-slate-900 text-white p-8 relative">
+            <div class="flex justify-between items-start">
+                <div>
+                    <div class="uppercase tracking-wide text-xs font-bold text-rose-400 mb-2">HPG 6103 • Week 10</div>
+                    <h1 class="text-3xl font-bold mb-2">Outbreak Investigation & Prevention</h1>
+                    <p class="text-slate-400">Dr. Moses Ndiritu</p>
+                </div>
+                <!-- Back Link -->
+                <a href="index.html" class="text-sm text-slate-400 hover:text-white transition-colors shrink-0 ml-4 flex items-center gap-1">
+                    <span>←</span> Back to Course
+                </a>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <div class="p-8 space-y-8">
+
+            <!-- Section 1 -->
+            <section>
+                <h2 class="text-xl font-bold text-slate-900 mb-3 border-b border-slate-200 pb-2">1. Key Definitions</h2>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
+                        <h3 class="font-bold text-rose-600 mb-1">Outbreak</h3>
+                        <p class="text-sm text-slate-700">The occurrence of cases of disease in excess of what would normally be expected in a defined community, geographical area, or season.</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
+                        <h3 class="font-bold text-sky-600 mb-1">Cluster</h3>
+                        <p class="text-sm text-slate-700">An aggregation of cases grouped in place and time that are suspected to be greater than the number expected, even though the expected number may not be known.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2 -->
+            <section>
+                <h2 class="text-xl font-bold text-slate-900 mb-3 border-b border-slate-200 pb-2">2. Steps of Investigation</h2>
+                <ol class="list-decimal pl-5 space-y-2 text-slate-700">
+                    <li><strong class="text-slate-900">Prepare for field work:</strong> Assemble team, logistics, PPE, and tools.</li>
+                    <li><strong class="text-slate-900">Establish existence:</strong> Compare observed vs. expected cases. Rule out reporting artifacts.</li>
+                    <li><strong class="text-slate-900">Verify diagnosis:</strong> Review clinical findings and secure laboratory confirmation (for a subset).</li>
+                    <li><strong class="text-slate-900">Define a case:</strong> Create a working case definition (Time, Place, Person, Clinical).</li>
+                    <li><strong class="text-slate-900">Find cases & Line list:</strong> Active search; record details in a standardized grid.</li>
+                    <li><strong class="text-slate-900">Describe (Descriptive Epi):</strong> Analyze by Person (who?), Place (map), and Time (epi curve).</li>
+                    <li><strong class="text-slate-900">Develop Hypotheses:</strong> Based on the descriptive findings.</li>
+                    <li><strong class="text-slate-900">Test Hypotheses:</strong> Analytical epidemiology (Cohort or Case-Control).</li>
+                    <li><strong class="text-slate-900">Implement Control:</strong> Stop the chain of transmission.</li>
+                    <li><strong class="text-slate-900">Communicate:</strong> Reports and community engagement.</li>
+                </ol>
+            </section>
+
+            <!-- Section 3 -->
+            <section>
+                <h2 class="text-xl font-bold text-slate-900 mb-3 border-b border-slate-200 pb-2">3. Interpreting Epi Curves</h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="bg-slate-100 text-slate-700">
+                            <tr>
+                                <th class="p-3 rounded-tl-lg">Pattern</th>
+                                <th class="p-3">Appearance</th>
+                                <th class="p-3 rounded-tr-lg">Meaning</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr>
+                                <td class="p-3 font-bold">Point Source</td>
+                                <td class="p-3">Sharp rise, distinct peak, rapid fall.</td>
+                                <td class="p-3">Single, brief exposure (e.g., food poisoning at a picnic).</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold">Continuous Source</td>
+                                <td class="p-3">Rise to a plateau; no distinct peak.</td>
+                                <td class="p-3">Exposure is ongoing (e.g., contaminated city water).</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold">Propagated</td>
+                                <td class="p-3">Series of progressively taller peaks.</td>
+                                <td class="p-3">Person-to-person spread (e.g., Measles, Flu). Peaks are one incubation period apart.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+             <!-- Section 4 -->
+             <section>
+                <h2 class="text-xl font-bold text-slate-900 mb-3 border-b border-slate-200 pb-2">4. Analytical Study Designs</h2>
+                <div class="space-y-4">
+                    <div class="border-l-4 border-emerald-500 pl-4">
+                        <h3 class="font-bold text-slate-900">Cohort Study</h3>
+                        <p class="text-sm text-slate-600 mb-1"><strong>When to use:</strong> The population is well-defined (e.g., guests at a wedding, students in a dorm).</p>
+                        <p class="text-sm text-slate-600 mb-1"><strong>Measure:</strong> Attack Rate (AR) and Risk Ratio (RR).</p>
+                        <p class="text-sm text-emerald-700 bg-emerald-50 inline-block px-2 py-1 rounded mt-1">Formula: AR = (New Cases) / (Population at Risk)</p>
+                    </div>
+                    <div class="border-l-4 border-sky-500 pl-4">
+                        <h3 class="font-bold text-slate-900">Case-Control Study</h3>
+                        <p class="text-sm text-slate-600 mb-1"><strong>When to use:</strong> The population is large or ill-defined (e.g., a city-wide outbreak).</p>
+                        <p class="text-sm text-slate-600 mb-1"><strong>Measure:</strong> Odds Ratio (OR).</p>
+                        <p class="text-sm text-sky-700 bg-sky-50 inline-block px-2 py-1 rounded mt-1">Logic: Compare exposure history of Sick (Cases) vs. Not Sick (Controls).</p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+
+        <!-- Footer -->
+        <footer class="bg-slate-50 p-6 text-center text-xs text-slate-400 border-t border-slate-200">
+            For educational use in HPG 6103.
+        </footer>
+
+    </article>
+
+</body>
+</html>
