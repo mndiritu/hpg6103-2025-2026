@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 9 Handout: Screening in Public Health</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        h1, h2, h3 { font-family: 'Merriweather', serif; }
+        .prose-custom { max-width: 65ch; margin: 0 auto; }
+        .anchor-offset { scroll-margin-top: 100px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+    <!-- Navigation Bar -->
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="index.html" class="flex items-center text-slate-500 hover:text-indigo-600 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                        Back to Course Portal
+                    </a>
+                </div>
+                <div class="flex items-center">
+                    <span class="px-3 py-1 bg-indigo-50 text-indigo-700 text-xs font-bold uppercase rounded-full tracking-wide">Student Handout</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 py-12">
+        <div class="max-w-3xl mx-auto px-6 text-center">
+            <p class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-2">Week 9 • HPG 6103</p>
+            <h1 class="text-4xl font-bold text-slate-900 mb-4">Screening in Public Health Practice</h1>
+            <p class="text-lg text-slate-600 leading-relaxed">
+                A summary of core definitions, the Wilson & Jungner criteria, biases in evaluation, and the impact of prevalence on predictive values.
+            </p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="py-12 px-6">
+        <article class="prose-custom space-y-12">
+
+            <!-- Section 1: Definitions -->
+            <section id="definitions" class="anchor-offset">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-2xl font-bold text-indigo-200">01</span>
+                    <h2 class="text-2xl font-bold text-slate-900">What is Screening?</h2>
+                </div>
+                <p class="text-slate-600 mb-6">
+                    Screening targets people who <em>think</em> they are well. This makes it powerful, but also ethically and logistically demanding compared to standard clinical care.
+                </p>
+                
+                <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 rounded-lg">
+                    <table class="min-w-full divide-y divide-slate-300">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-slate-900">Term</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-slate-900">Target Population</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-slate-900">Example</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 bg-white">
+                            <tr>
+                                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-bold text-indigo-600">Screening</td>
+                                <td class="px-3 py-4 text-sm text-slate-600">Apparently <strong>healthy</strong> (asymptomatic)</td>
+                                <td class="px-3 py-4 text-sm text-slate-600">Mass invitation for mammography</td>
+                            </tr>
+                            <tr>
+                                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-bold text-slate-900">Early Diagnosis</td>
+                                <td class="px-3 py-4 text-sm text-slate-600">People with <strong>mild/vague symptoms</strong></td>
+                                <td class="px-3 py-4 text-sm text-slate-600">Referral for a breast lump</td>
+                            </tr>
+                            <tr>
+                                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-bold text-slate-900">Case-Finding</td>
+                                <td class="px-3 py-4 text-sm text-slate-600">Patients visiting for <strong>other reasons</strong></td>
+                                <td class="px-3 py-4 text-sm text-slate-600">BP check during wound care</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Section 2: Why Screen? -->
+            <section id="rationale" class="anchor-offset">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-2xl font-bold text-indigo-200">02</span>
+                    <h2 class="text-2xl font-bold text-slate-900">Why Do We Screen?</h2>
+                </div>
+                <div class="bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-r-lg mb-6">
+                    <p class="text-indigo-900 text-sm font-medium">
+                        <strong>Key Concept: The DPCP</strong><br>
+                        The Detectable Preclinical Phase is the window where disease is present but asymptomatic. Screening is only useful if this window is long enough to catch the disease <em>before</em> irreversible damage occurs.
+                    </p>
+                </div>
+                <ul class="list-disc pl-5 space-y-2 text-slate-600 marker:text-indigo-400">
+                    <li><strong>Burden:</strong> The disease must be a significant health problem.</li>
+                    <li><strong>Treatment:</strong> Earlier detection must actually improve the outcome (not just shift the diagnosis date).</li>
+                    <li><strong>System:</strong> A "good" test is useless without the capacity to confirm and treat positives.</li>
+                </ul>
+            </section>
+
+            <!-- Section 3: Wilson & Jungner -->
+            <section id="criteria" class="anchor-offset">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-2xl font-bold text-indigo-200">03</span>
+                    <h2 class="text-2xl font-bold text-slate-900">Wilson & Jungner Criteria (1968)</h2>
+                </div>
+                <p class="text-slate-600 mb-4">The classic checklist for any proposed programme:</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="border border-slate-200 rounded-lg p-5">
+                        <h3 class="font-bold text-slate-800 mb-2">The Condition</h3>
+                        <ul class="text-sm text-slate-600 space-y-1">
+                            <li>• Important health problem?</li>
+                            <li>• Natural history understood?</li>
+                            <li>• Recognisable latent stage?</li>
+                        </ul>
+                    </div>
+                    <div class="border border-slate-200 rounded-lg p-5">
+                        <h3 class="font-bold text-slate-800 mb-2">The Test</h3>
+                        <ul class="text-sm text-slate-600 space-y-1">
+                            <li>• Valid (Sensitive/Specific)?</li>
+                            <li>• Safe and acceptable?</li>
+                            <li>• Clear policy on who is a "case"?</li>
+                        </ul>
+                    </div>
+                    <div class="border border-slate-200 rounded-lg p-5 md:col-span-2">
+                        <h3 class="font-bold text-slate-800 mb-2">System & Economics</h3>
+                        <ul class="text-sm text-slate-600 space-y-1">
+                            <li>• Are diagnosis/treatment facilities available <strong>now</strong>?</li>
+                            <li>• Is the cost balanced against benefits?</li>
+                            <li>• Is screening a <strong>continuing process</strong> (not a one-off campaign)?</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 4: The Math -->
+            <section id="math" class="anchor-offset">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-2xl font-bold text-indigo-200">04</span>
+                    <h2 class="text-2xl font-bold text-slate-900">The Screening Paradox</h2>
+                </div>
+                <p class="text-slate-600 mb-4">
+                    Screening typically occurs in <strong>low-prevalence</strong> populations.
+                </p>
+                <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                    <p class="font-serif text-lg text-slate-800 text-center italic mb-4">
+                        "Low Prevalence = Low Positive Predictive Value (PPV)"
+                    </p>
+                    <p class="text-slate-600 text-sm">
+                        Even a test with 95% specificity will generate huge numbers of false positives when applied to a general population where only 0.1% have the disease.
+                    </p>
+                    <div class="mt-4 pt-4 border-t border-slate-100">
+                        <p class="text-sm font-bold text-indigo-600 uppercase tracking-wide">The Solution: Two-Step Design</p>
+                        <ol class="list-decimal pl-5 mt-2 space-y-1 text-slate-600 text-sm">
+                            <li><strong>Screening Test:</strong> High Sensitivity, Low Cost (e.g., VIA). Catches everyone, including false alarms.</li>
+                            <li><strong>Confirmatory Test:</strong> High Specificity (e.g., Biopsy). Filters out the false alarms.</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 5: Biases -->
+            <section id="biases" class="anchor-offset">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-2xl font-bold text-indigo-200">05</span>
+                    <h2 class="text-2xl font-bold text-slate-900">Biases in Evaluation</h2>
+                </div>
+                <p class="text-slate-600 mb-6">Beware of "improved survival" statistics. They often reflect bias rather than true benefit.</p>
+
+                <div class="space-y-6">
+                    <div class="flex gap-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center font-bold">A</div>
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-900">Lead-Time Bias</h3>
+                            <p class="text-slate-600 text-sm mt-1">
+                                Earlier diagnosis makes survival look longer because the "clock" starts sooner, even if the patient dies at the same time. We only prolonged the time they <em>knew</em> they were sick.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-bold">B</div>
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-900">Length-Time Bias</h3>
+                            <p class="text-slate-600 text-sm mt-1">
+                                Screening catches "slow-growing" (lazy) tumors because they stay in the body longer. Aggressive tumors appear between screens. Therefore, screening cohorts naturally have better prognosis.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-red-100 text-red-600 rounded-full flex items-center justify-center font-bold">C</div>
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-900">Overdiagnosis</h3>
+                            <p class="text-slate-600 text-sm mt-1">
+                                Detecting disease that meets pathological criteria but would <strong>never</strong> have caused symptoms or death in the patient's lifetime (e.g., some prostate or thyroid cancers). This leads to harmful overtreatment.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 6: Evaluation -->
+            <section id="evaluation" class="anchor-offset">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-2xl font-bold text-indigo-200">06</span>
+                    <h2 class="text-2xl font-bold text-slate-900">Evaluation Metrics</h2>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="bg-slate-50 p-4 rounded-lg">
+                        <h3 class="text-sm font-bold text-slate-900 uppercase">Process Indicators</h3>
+                        <p class="text-xs text-slate-500 mt-1 mb-2">Is the machinery working?</p>
+                        <ul class="text-sm text-slate-600 list-disc pl-4">
+                            <li>Coverage (% invited who came)</li>
+                            <li>Follow-up (% positives treated)</li>
+                        </ul>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg">
+                        <h3 class="text-sm font-bold text-slate-900 uppercase">Final Outcomes</h3>
+                        <p class="text-xs text-slate-500 mt-1 mb-2">Did health improve?</p>
+                        <ul class="text-sm text-slate-600 list-disc pl-4">
+                            <li>Disease-specific mortality</li>
+                            <li>Quality of Life (QALYs)</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-10 mt-12">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <p class="text-sm">HPG 6103 Course Materials</p>
+            <div class="mt-4 flex justify-center gap-6 text-sm font-medium">
+                <a href="Screening_Evaluator_Tool.html" class="hover:text-white transition-colors">Screening Tool</a>
+                <a href="Screening_Quiz_App.html" class="hover:text-white transition-colors">Practice Quiz</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

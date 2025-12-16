@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Epi Detective</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style> 
+        body { font-family: 'Inter', sans-serif; } 
+        .ph { vertical-align: middle; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-slate-50 flex flex-col min-h-screen">
+
+    <!-- App Header -->
+    <div class="w-full bg-white shadow-sm py-4 px-6 flex justify-between items-center border-b border-slate-200 sticky top-0 z-10">
+        <div class="font-bold text-slate-800 text-lg flex items-center gap-2">
+             <a href="index.html" class="text-slate-400 hover:text-sky-600 transition-colors flex items-center gap-1">
+                <i class="ph ph-arrow-counter-clockwise"></i> Portal
+             </a>
+             <span class="text-slate-300">/</span>
+             <span>The Epi Detective</span>
+        </div>
+        <div class="text-xs text-sky-600 uppercase font-bold tracking-wider bg-sky-50 px-3 py-1 rounded-full">Week 8 Tool</div>
+    </div>
+
+    <!-- Main Container -->
+    <div id="app-container" class="flex-grow flex flex-col items-center justify-center p-4">
+        <!-- Content injected by JS -->
+    </div>
+
+    <script>
+        // --- DATA ---
+        const scenarios = [
+            {
+                id: 1,
+                title: "The Silent Killer",
+                role: "Kiambu County Epidemiologist",
+                request: "The Governor wants to know exactly what percentage of adults in the county have hypertension to plan a new screening budget.",
+                options: [
+                    {
+                        id: 'khis',
+                        label: "Check KHIS (DHIS2) Monthly Outpatient Reports",
+                        icon: "ph-buildings",
+                        correct: false,
+                        feedback: "Incorrect. KHIS only captures people who come to the clinic. Hypertension is often asymptomatic. Using facility data creates Selection Bias and drastically underestimates the true burden."
+                    },
+                    {
+                        id: 'steps',
+                        label: "Commission a STEPs Survey (or use regional data)",
+                        icon: "ph-clipboard-text",
+                        correct: true,
+                        feedback: "Correct! To find the 'true' prevalence (including undiagnosed cases), you need active population-based screening like the WHO STEPs survey."
+                    },
+                    {
+                        id: 'crvs',
+                        label: "Check Civil Registration (Death Certificates)",
+                        icon: "ph-book-open",
+                        correct: false,
+                        feedback: "Incorrect. CRVS measures mortality (deaths), not morbidity (prevalence). This won't tell you how many people are currently living with the condition."
+                    }
+                ]
+            },
+            {
+                id: 2,
+                title: "The Sudden Spike",
+                role: "National Malaria Control Program",
+                request: "We see a 200% increase in malaria cases in Turkana this month compared to last month. The Minister is panicking. What is your first move?",
+                options: [
+                    {
+                        id: 'kdhs',
+                        label: "Wait for the next Demographic Health Survey (KDHS)",
+                        icon: "ph-calendar",
+                        correct: false,
+                        feedback: "Too slow! KDHS happens every 5 years. You need to investigate an immediate potential outbreak."
+                    },
+                    {
+                        id: 'audit',
+                        label: "Audit Data Quality & Reporting Rates in KHIS",
+                        icon: "ph-magnifying-glass",
+                        correct: true,
+                        feedback: "Excellent reflex. Before declaring an outbreak, check if reporting rates changed (e.g., did 10 new clinics just start reporting?). This could be a 'Data Artifact'."
+                    },
+                    {
+                        id: 'gbd',
+                        label: "Check the Global Burden of Disease Model",
+                        icon: "ph-globe",
+                        correct: false,
+                        feedback: "Incorrect. Global models are annual estimates based on trends. They are not sensitive enough to detect or explain a sudden monthly spike in a specific county."
+                    }
+                ]
+            },
+            {
+                id: 3,
+                title: "The Comparison Game",
+                role: "WHO Consultant",
+                request: "We need to compare Tuberculosis mortality rates between Kenya, Uganda, and Tanzania for a regional grant proposal.",
+                options: [
+                    {
+                        id: 'raw',
+                        label: "Sum up raw hospital death registers from each country",
+                        icon: "ph-file-plus",
+                        correct: false,
+                        feedback: "Risky. Each country has different facility reporting rates and definitions. Raw sums will likely be non-comparable."
+                    },
+                    {
+                        id: 'model',
+                        label: "Use WHO/GBD Modelled Estimates",
+                        icon: "ph-globe",
+                        correct: true,
+                        feedback: "Correct. For cross-country comparison, you need standardized estimates that adjust for differences in population age structure and reporting coverage."
+                    },
+                    {
+                        id: 'census',
+                        label: "Use the most recent Census data from each",
+                        icon: "ph-users",
+                        correct: false,
+                        feedback: "Incorrect. Census data provides the denominator (population), but rarely captures specific causes of death like TB in detail."
+                    }
+                ]
+            },
+            {
+                id: 4,
+                title: "The Cholera Threat",
+                role: "Sub-County MoH Lead",
+                request: "A nurse reports 3 suspected cases of Cholera with acute watery diarrhea. We need to know if this is an outbreak.",
+                options: [
+                    {
+                        id: 'idsr',
+                        label: "Trigger IDSR (Integrated Disease Surveillance)",
+                        icon: "ph-bell",
+                        correct: true,
+                        feedback: "Spot on. IDSR is designed for speed. Even unconfirmed cases of outbreak-prone diseases must be reported immediately for response."
+                    },
+                    {
+                        id: 'annual',
+                        label: "Wait for the Annual Statistical Report",
+                        icon: "ph-file-text",
+                        correct: false,
+                        feedback: "Dangerous. By the time the annual report is out, the outbreak will have spread. Public health surveillance prioritizes timeliness over perfect completeness."
+                    }
+                ]
+            }
+        ];
+
+        // --- STATE ---
+        let gameState = 'start'; // start, question, feedback, summary
+        let currentScenarioIndex = 0;
+        let score = 0;
+        let lastSelectedOption = null;
+
+        // --- DOM ELEMENTS ---
+        const container = document.getElementById('app-container');
+
+        // --- RENDER FUNCTIONS ---
+
+        function render() {
+            container.innerHTML = ''; // Clear container
+            container.className = "flex-grow flex flex-col items-center justify-center p-4 fade-in";
+
+            if (gameState === 'start') renderStart();
+            else if (gameState === 'question') renderQuestion();
+            else if (gameState === 'feedback') renderFeedback();
+            else if (gameState === 'summary') renderSummary();
+        }
+
+        function renderStart() {
+            container.innerHTML = `
+                <div class="bg-white p-10 rounded-2xl shadow-sm border border-slate-200 max-w-2xl text-center">
+                    <div class="mb-6 flex justify-center text-sky-600">
+                        <i class="ph ph-stethoscope text-6xl"></i>
+                    </div>
+                    <h1 class="text-4xl font-bold text-slate-900 mb-2">The Epi Detective</h1>
+                    <p class="text-slate-500 text-lg mb-8 leading-relaxed">
+                        Welcome, Epidemiologist. You will face <strong>4 real-world scenarios</strong>. 
+                        Choose the correct data source to answer the public health question.
+                    </p>
+                    <button onclick="startGame()" class="bg-sky-600 hover:bg-sky-700 text-white font-semibold py-3 px-8 rounded-lg shadow-md transition-all flex items-center gap-2 mx-auto">
+                        Start Investigation <i class="ph ph-arrow-right text-lg"></i>
+                    </button>
+                </div>
+            `;
+        }
+
+        function renderQuestion() {
+            const scenario = scenarios[currentScenarioIndex];
+            const progress = ((currentScenarioIndex + 1) / scenarios.length) * 100;
+
+            let optionsHtml = scenario.options.map((opt, idx) => `
+                <button onclick="handleAnswer(${idx})" class="w-full text-left p-4 border border-slate-200 rounded-lg hover:border-sky-500 hover:bg-sky-50 transition flex items-center group mb-3">
+                    <div class="text-slate-400 group-hover:text-sky-600 mr-4 text-2xl">
+                        <i class="ph ${opt.icon}"></i>
+                    </div>
+                    <span class="font-medium text-slate-700">${opt.label}</span>
+                </button>
+            `).join('');
+
+            container.innerHTML = `
+                <div class="max-w-3xl w-full">
+                    <div class="w-full bg-slate-200 rounded-full h-2 mb-8">
+                        <div class="bg-sky-600 h-2 rounded-full transition-all duration-500" style="width: ${progress}%"></div>
+                    </div>
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="bg-slate-50 p-6 border-b border-slate-200 flex justify-between items-center">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Case #${scenario.id}</span>
+                            <span class="bg-sky-100 text-sky-700 px-3 py-1 rounded-full text-xs font-semibold">${scenario.role}</span>
+                        </div>
+                        <div class="p-8">
+                            <h2 class="text-2xl font-bold text-slate-900 mb-6">${scenario.title}</h2>
+                            <div class="bg-sky-50 border-l-4 border-sky-500 p-4 mb-8">
+                                <div class="flex gap-3">
+                                    <i class="ph ph-envelope-open text-2xl text-sky-600 mt-1"></i>
+                                    <p class="text-slate-700 italic">"${scenario.request}"</p>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                ${optionsHtml}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderFeedback() {
+            const isCorrect = lastSelectedOption.correct;
+            const borderColor = isCorrect ? 'border-emerald-500' : 'border-rose-500';
+            const iconBg = isCorrect ? 'bg-emerald-100 text-emerald-600' : 'bg-rose-100 text-rose-600';
+            const icon = isCorrect ? 'ph-check' : 'ph-x';
+            const title = isCorrect ? 'Correct Choice' : 'Incorrect Choice';
+
+            container.innerHTML = `
+                <div class="max-w-3xl w-full">
+                    <div class="bg-white rounded-xl shadow-sm border-t-4 overflow-hidden ${borderColor}">
+                        <div class="p-8 text-center">
+                            <div class="mx-auto w-16 h-16 rounded-full flex items-center justify-center mb-4 ${iconBg}">
+                                <i class="ph ${icon} text-3xl"></i>
+                            </div>
+                            <h2 class="text-2xl font-bold text-slate-900 mb-2">${title}</h2>
+                            <p class="text-slate-600 mb-8 text-lg">${lastSelectedOption.feedback}</p>
+                            <button onclick="nextStep()" class="bg-slate-900 hover:bg-slate-800 text-white font-semibold py-3 px-8 rounded-lg transition-all mx-auto flex items-center gap-2">
+                                Continue <i class="ph ph-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSummary() {
+            let message = score > 2 ? "Excellent work! You've mastered data sources." : "Review the lecture notes and try again.";
+            
+            container.innerHTML = `
+                <div class="max-w-xl w-full text-center">
+                    <div class="bg-white p-10 rounded-2xl shadow-sm border border-slate-200">
+                        <div class="mb-6 flex justify-center text-sky-600"><i class="ph ph-trophy text-6xl"></i></div>
+                        <h2 class="text-3xl font-bold text-slate-900 mb-2">Investigation Complete</h2>
+                        <p class="text-slate-500 mb-6">Your Performance Report</p>
+                        <div class="text-6xl font-black text-sky-600 mb-6">${score} <span class="text-3xl text-slate-300">/ ${scenarios.length}</span></div>
+                        <p class="text-slate-600 mb-8 font-medium">${message}</p>
+                        <button onclick="restartGame()" class="text-sky-600 font-semibold hover:text-sky-700 flex items-center justify-center gap-2 mx-auto">
+                            <i class="ph ph-arrow-counter-clockwise text-lg"></i> Restart
+                        </button>
+                        <div class="mt-8 pt-8 border-t border-slate-100">
+                            <a href="index.html" class="text-slate-400 hover:text-slate-600 text-sm font-medium">Return to Course Portal</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- ACTIONS ---
+
+        window.startGame = function() {
+            gameState = 'question';
+            currentScenarioIndex = 0;
+            score = 0;
+            render();
+        };
+
+        window.handleAnswer = function(optionIndex) {
+            lastSelectedOption = scenarios[currentScenarioIndex].options[optionIndex];
+            if (lastSelectedOption.correct) {
+                score++;
+            }
+            gameState = 'feedback';
+            render();
+        };
+
+        window.nextStep = function() {
+            if (currentScenarioIndex + 1 < scenarios.length) {
+                currentScenarioIndex++;
+                gameState = 'question';
+            } else {
+                gameState = 'summary';
+            }
+            render();
+        };
+
+        window.restartGame = function() {
+            gameState = 'start';
+            render();
+        };
+
+        // Initialize
+        render();
+
+    </script>
+</body>
+</html>

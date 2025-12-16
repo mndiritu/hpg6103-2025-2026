@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: Screening in Public Health</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Custom scrollbar for rationale box */
+        .rationale-box::-webkit-scrollbar { width: 6px; }
+        .rationale-box::-webkit-scrollbar-track { background: #f1f5f9; }
+        .rationale-box::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- App Container -->
+    <div id="app" class="w-full max-w-2xl bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200">
+        
+        <!-- Header -->
+        <header class="bg-white border-b border-slate-100 p-6 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <a href="index.html" class="text-slate-400 hover:text-sky-600 transition-colors" title="Back to Course Portal">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                </a>
+                <h1 class="text-lg font-bold text-slate-700">Screening in Public Health</h1>
+            </div>
+            <div id="progress-container" class="hidden flex items-center gap-3">
+                <div class="w-32 h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div id="progress-bar" class="h-full bg-sky-500 w-0 transition-all duration-300"></div>
+                </div>
+                <span id="question-tracker" class="text-xs font-semibold text-slate-500">1/10</span>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="p-6 md:p-8 min-h-[400px] flex flex-col justify-center">
+            
+            <!-- START SCREEN -->
+            <div id="start-screen" class="text-center space-y-6 fade-in">
+                <div class="w-20 h-20 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-800">Practice Quiz</h2>
+                <p class="text-slate-600 max-w-md mx-auto">
+                    Test your knowledge on screening definitions, biases (lead-time, length-time), the Wilson & Jungner criteria, and evaluation metrics.
+                </p>
+                <div class="flex flex-col gap-2 max-w-xs mx-auto text-sm text-slate-500">
+                    <span class="flex items-center justify-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> 10 Questions</span>
+                    <span class="flex items-center justify-center gap-2"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> Immediate Feedback</span>
+                </div>
+                <button onclick="startQuiz()" class="px-8 py-3 bg-sky-600 hover:bg-sky-700 text-white font-semibold rounded-lg shadow-lg shadow-sky-200 transition-all transform hover:scale-105">
+                    Start Quiz
+                </button>
+            </div>
+
+            <!-- QUIZ SCREEN -->
+            <div id="quiz-screen" class="hidden space-y-6 fade-in">
+                <div class="space-y-4">
+                    <span class="inline-block px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-wide rounded-full mb-2">Question</span>
+                    <h3 id="question-text" class="text-xl font-semibold text-slate-800 leading-relaxed">
+                        <!-- Question goes here -->
+                    </h3>
+                    
+                    <!-- Hint Toggle -->
+                    <button onclick="toggleHint()" class="text-sm text-sky-600 hover:text-sky-700 font-medium flex items-center gap-1 focus:outline-none">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Need a hint?
+                    </button>
+                    <div id="hint-box" class="hidden bg-sky-50 border-l-4 border-sky-400 p-3 text-sm text-sky-800 italic">
+                        <!-- Hint text -->
+                    </div>
+                </div>
+
+                <!-- Options -->
+                <div id="options-container" class="grid grid-cols-1 gap-3">
+                    <!-- Options injected here -->
+                </div>
+
+                <!-- Feedback Area -->
+                <div id="feedback-area" class="hidden border rounded-lg p-4 bg-slate-50 mt-4 fade-in">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span id="feedback-icon" class="text-xl"></span>
+                        <span id="feedback-title" class="font-bold"></span>
+                    </div>
+                    <p id="feedback-text" class="text-sm text-slate-600 leading-relaxed"></p>
+                    <button id="next-btn" onclick="nextQuestion()" class="mt-4 w-full md:w-auto px-6 py-2 bg-slate-800 hover:bg-slate-900 text-white font-medium rounded-lg transition-colors">
+                        Next Question
+                    </button>
+                </div>
+            </div>
+
+            <!-- RESULTS SCREEN -->
+            <div id="results-screen" class="hidden text-center space-y-6 fade-in">
+                <h2 class="text-3xl font-bold text-slate-800">Quiz Complete!</h2>
+                
+                <div class="w-32 h-32 mx-auto rounded-full border-4 border-slate-100 flex items-center justify-center bg-white shadow-inner relative">
+                    <svg class="w-full h-full absolute top-0 left-0 transform -rotate-90 text-sky-500" viewBox="0 0 36 36">
+                        <path class="text-slate-100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="currentColor" stroke-width="3" />
+                        <path id="score-circle" d="" fill="none" stroke="currentColor" stroke-width="3" stroke-dasharray="0, 100" />
+                    </svg>
+                    <div class="text-center z-10">
+                        <span id="score-percentage" class="block text-2xl font-bold text-slate-800">0%</span>
+                        <span class="text-xs text-slate-500 uppercase">Score</span>
+                    </div>
+                </div>
+
+                <p id="score-message" class="text-lg text-slate-600">You scored <span id="score-count" class="font-bold text-sky-600">0</span> out of <span id="total-count">0</span>.</p>
+                
+                <div class="flex justify-center gap-4 pt-4">
+                    <button onclick="restartQuiz()" class="px-6 py-3 bg-sky-600 hover:bg-sky-700 text-white font-medium rounded-lg shadow-md transition-colors">
+                        Retry Quiz
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- DATA & LOGIC -->
+    <script>
+        const quizData = [
+            {
+                question: "A 45-year-old woman discovers a lump in her breast while showering and visits a specialized clinic the next day for a biopsy. How is this medical activity best classified?",
+                hint: "Consider the symptom status of the patient: did she think she was well, or did she have a specific complaint?",
+                options: [
+                    { text: "Early Diagnosis", isCorrect: true, rationale: "Early diagnosis targets individuals who already have mild or non-specific symptoms (like a lump) to reduce the delay to treatment." },
+                    { text: "Screening", isCorrect: false, rationale: "Screening is the testing of apparently healthy, asymptomatic individuals, whereas this patient presented with a specific symptom." },
+                    { text: "Case-Finding", isCorrect: false, rationale: "Case-finding implies opportunistic testing for an unrelated condition during a health visit, but this patient visited specifically for the symptom found." },
+                    { text: "Primary Prevention", isCorrect: false, rationale: "Primary prevention aims to prevent disease occurrence (e.g., vaccination), whereas this action addresses an existing potential disease." }
+                ]
+            },
+            {
+                question: "A new genetic test is developed that can detect a rare, fatal neurodegenerative disease 10 years before symptoms appear. However, there is currently no cure, treatment, or management strategy available. Which Wilson & Jungner criterion does this screening proposal primarily fail?",
+                hint: "Think about the ethical implication of telling someone they have a fatal disease if doctors can do nothing to help them.",
+                options: [
+                    { text: "There should be an accepted treatment for patients with recognized disease.", isCorrect: true, rationale: "Screening is unethical if it identifies disease for which the health system can offer no intervention to improve the outcome." },
+                    { text: "The condition should be an important health problem.", isCorrect: false, rationale: "A fatal neurodegenerative disease is arguably an important health problem to the individual, even if rare; the lack of treatment is the definitive failure here." },
+                    { text: "There should be a recognisable latent or early symptomatic stage.", isCorrect: false, rationale: "The scenario states the test detects the disease 10 years before symptoms, meaning a recognizable latent stage exists." },
+                    { text: "The test should be valid (sensitive and specific).", isCorrect: false, rationale: "The scenario implies the test works (it can detect the disease), so validity is not the primary objection stated." }
+                ]
+            },
+            {
+                question: "In a general population screening program for a rare cancer (prevalence 0.1%), a test with 95% specificity is used. What is the most significant statistical consequence of this low prevalence?",
+                hint: "Recall the 'Screening Paradox': when looking for a needle in a massive haystack, most things you pick up that look like needles are actually just hay.",
+                options: [
+                    { text: "A low Positive Predictive Value (PPV), meaning most positive results are false alarms.", isCorrect: true, rationale: "In low-prevalence settings, the number of disease-free people is huge; even a small false-positive rate (5%) produces more false positives than the few true positives found." },
+                    { text: "A low Negative Predictive Value (NPV), meaning many negatives are actually missed cases.", isCorrect: false, rationale: "Low prevalence usually results in a very high NPV because it is easy to correctly predict that most people do not have the rare disease." },
+                    { text: "A decrease in the sensitivity of the test itself.", isCorrect: false, rationale: "Sensitivity is an intrinsic property of the test and does not change based on the population's prevalence." },
+                    { text: "The test will function exactly as it does in a hospital setting.", isCorrect: false, rationale: "Hospital populations have higher prevalence (symptomatic people), which yields a higher PPV than screening healthy populations." }
+                ]
+            },
+            {
+                question: "A screening program reports that patients diagnosed via screening live 5 years post-diagnosis, while those diagnosed clinically live only 2 years post-diagnosis. However, total mortality rates in the population remain unchanged. What bias is likely distorting these survival statistics?",
+                hint: "Think about when the 'stopwatch' for survival starts ticking in screening versus clinical diagnosis.",
+                options: [
+                    { text: "Lead-Time Bias", isCorrect: true, rationale: "Lead-time bias occurs when screening advances the time of diagnosis, making survival appear longer without actually postponing death." },
+                    { text: "Length-Time Bias", isCorrect: false, rationale: "Length-time bias refers to screening detecting slower-growing cases, not specifically the shift in diagnosis time relative to death." },
+                    { text: "Selection Bias", isCorrect: false, rationale: "While volunteers for screening might be healthier (healthy worker effect), the specific description of 'survival from diagnosis' points to the clock-start error." },
+                    { text: "Overdiagnosis", isCorrect: false, rationale: "Overdiagnosis involves finding disease that wouldn't cause symptoms; while related, the survival time illusion is specifically lead-time bias." }
+                ]
+            },
+            {
+                question: "Why do screen-detected cohorts of cancer patients often appear to have better prognosis than clinically detected cohorts, even if the treatment efficacy is identical?",
+                hint: "Imagine fishing with a net: are you more likely to catch the slow, lazy fish or the ones swimming rapidly through the area?",
+                options: [
+                    { text: "Length-Time Bias", isCorrect: true, rationale: "Screening is more likely to detect slow-growing (indolent) tumors because they stay in the preclinical phase longer, whereas aggressive tumors often surface between screens." },
+                    { text: "Lead-Time Bias", isCorrect: false, rationale: "Lead-time bias explains longer perceived survival due to earlier diagnosis, not the difference in tumor aggressiveness/biology." },
+                    { text: "Measurement Error", isCorrect: false, rationale: "This is a systematic bias related to tumor growth rates, not a random error in measurement." },
+                    { text: "Recall Bias", isCorrect: false, rationale: "Recall bias relates to participants remembering past events, which is not relevant to the biological prognosis of the tumor detected." }
+                ]
+            },
+            {
+                question: "A 75-year-old man undergoes PSA screening and is diagnosed with low-grade prostate cancer. He undergoes surgery but suffers from incontinence. Autopsy studies suggest the cancer was so slow-growing he would have died of other causes before it ever affected him. This scenario best illustrates:",
+                hint: "The patient was treated for a disease that was essentially a 'turtle'—present, but never going to win the race to end his life.",
+                options: [
+                    { text: "Overdiagnosis", isCorrect: true, rationale: "Overdiagnosis is the detection of a condition that meets pathological criteria but would never have caused symptoms or death in the patient's lifetime." },
+                    { text: "False Positive", isCorrect: false, rationale: "A false positive means the person does not have the disease; here, he *did* have cancer pathologically, but it was clinically irrelevant." },
+                    { text: "False Negative", isCorrect: false, rationale: "A false negative would mean the test missed the cancer, which is the opposite of what happened here." },
+                    { text: "Length-Time Bias", isCorrect: false, rationale: "While related to slow growth, the specific harm of treating a harmless condition is defined as overdiagnosis." }
+                ]
+            },
+            {
+                question: "To manage the issue of low Positive Predictive Value (PPV) in a screening program, public health officials often employ a 'Two-Step' design. What characterizes the second step?",
+                hint: "After casting a wide net to catch everyone (sensitivity), you need a precise tool to check if what you caught is actually what you wanted.",
+                options: [
+                    { text: "High Specificity", isCorrect: true, rationale: "The confirmatory test (Step 2) must be highly specific to rule out the false positives generated by the sensitive first test." },
+                    { text: "High Sensitivity", isCorrect: false, rationale: "High sensitivity is crucial for the first step to ensure no cases are missed; the second step needs to filter the results." },
+                    { text: "Low Cost", isCorrect: false, rationale: "The second test is often more expensive and invasive (e.g., biopsy) because it is applied to a smaller group of people." },
+                    { text: "Population-wide application", isCorrect: false, rationale: "The second step is only applied to those who tested positive in the first step, not the whole population." }
+                ]
+            },
+            {
+                question: "A patient visits a health clinic for a sprained ankle. During triage, the nurse notices the patient is 45 years old and checks their blood pressure, identifying hypertension. This is an example of:",
+                hint: "The patient was already 'in the building' for another reason when the test was performed.",
+                options: [
+                    { text: "Case-Finding (Opportunistic Screening)", isCorrect: true, rationale: "Case-finding detects disease in patients already contacting the health system for unrelated reasons (the ankle)." },
+                    { text: "Mass Screening", isCorrect: false, rationale: "Mass screening involves inviting the general population (e.g., via mail or community campaigns), not just checking those who show up." },
+                    { text: "Early Diagnosis", isCorrect: false, rationale: "Early diagnosis applies to patients with symptoms of the disease in question; the ankle injury is unrelated to hypertension." },
+                    { text: "Diagnostic Testing", isCorrect: false, rationale: "Diagnostic testing is usually performed to confirm a specific suspicion; this was an opportunistic check on an asymptomatic person." }
+                ]
+            },
+            {
+                question: "You are auditing a breast cancer screening program. Which of the following is a 'Process Indicator' rather than an outcome measure?",
+                hint: "Look for the metric that checks if the 'machinery' of the program is running correctly, regardless of whether patients are getting cured yet.",
+                options: [
+                    { text: "Percentage of screen-positive women who undergo biopsy within 30 days.", isCorrect: true, rationale: "This measures the efficiency of the program's operations (process) rather than the health improvement of the population." },
+                    { text: "Reduction in breast cancer mortality rate.", isCorrect: false, rationale: "Mortality reduction is a final outcome measure." },
+                    { text: "Shift in cancer stage at diagnosis (more Stage I vs. Stage IV).", isCorrect: false, rationale: "Stage shift is an intermediate outcome measure." },
+                    { text: "Cost per Quality-Adjusted Life Year (QALY) gained.", isCorrect: false, rationale: "This is an economic evaluation metric." }
+                ]
+            },
+            {
+                question: "A government decides to fund a high-tech cancer screening program by cutting the budget for basic childhood vaccinations. This decision best illustrates which concept?",
+                hint: "Money spent on one thing cannot be spent on another. What is the 'lost' benefit called?",
+                options: [
+                    { text: "Opportunity Cost", isCorrect: true, rationale: "Opportunity cost refers to the benefits lost (vaccination protection) when resources are diverted to a different choice (screening)." },
+                    { text: "Lead-Time Bias", isCorrect: false, rationale: "This refers to statistical bias in survival time, not resource allocation." },
+                    { text: "Direct Economic Harm", isCorrect: false, rationale: "Direct economic harm usually refers to costs incurred by the patient (transport, lost wages), not the system's budget tradeoffs." },
+                    { text: "Lack of Autonomy", isCorrect: false, rationale: "Autonomy relates to individual consent, not government budgeting decisions." }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let shuffledOptions = [];
+
+        // Shuffle utility
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function startQuiz() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            document.getElementById('progress-container').classList.remove('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const data = quizData[currentQuestion];
+            const qText = document.getElementById('question-text');
+            const optionsContainer = document.getElementById('options-container');
+            const hintBox = document.getElementById('hint-box');
+            const feedbackArea = document.getElementById('feedback-area');
+
+            // Reset UI
+            qText.textContent = data.question;
+            hintBox.textContent = data.hint;
+            hintBox.classList.add('hidden');
+            feedbackArea.classList.add('hidden');
+            optionsContainer.innerHTML = '';
+            
+            // Update Progress
+            const percentage = ((currentQuestion) / quizData.length) * 100;
+            document.getElementById('progress-bar').style.width = `${percentage}%`;
+            document.getElementById('question-tracker').textContent = `${currentQuestion + 1}/${quizData.length}`;
+
+            // Shuffle options for display only (keep mapping to original)
+            shuffledOptions = [...data.options];
+            shuffleArray(shuffledOptions);
+
+            shuffledOptions.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-4 rounded-lg border-2 border-slate-100 bg-white hover:border-sky-200 hover:bg-sky-50 transition-all duration-200 font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-1";
+                btn.textContent = opt.text;
+                btn.onclick = () => selectOption(btn, opt);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function toggleHint() {
+            document.getElementById('hint-box').classList.toggle('hidden');
+        }
+
+        function selectOption(btnElement, optionData) {
+            const allBtns = document.getElementById('options-container').children;
+            const feedbackArea = document.getElementById('feedback-area');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackText = document.getElementById('feedback-text');
+            const feedbackIcon = document.getElementById('feedback-icon');
+
+            // Disable all buttons
+            for (let btn of allBtns) {
+                btn.disabled = true;
+                btn.classList.add('opacity-70', 'cursor-not-allowed');
+            }
+
+            // Logic
+            if (optionData.isCorrect) {
+                score++;
+                btnElement.classList.remove('border-slate-100', 'bg-white', 'hover:border-sky-200');
+                btnElement.classList.add('border-emerald-500', 'bg-emerald-50', 'text-emerald-800');
+                
+                feedbackTitle.textContent = "Correct!";
+                feedbackTitle.className = "font-bold text-emerald-600";
+                feedbackIcon.textContent = "✅";
+                feedbackArea.className = "border rounded-lg p-4 mt-4 fade-in border-emerald-200 bg-emerald-50";
+            } else {
+                btnElement.classList.remove('border-slate-100', 'bg-white', 'hover:border-sky-200');
+                btnElement.classList.add('border-rose-500', 'bg-rose-50', 'text-rose-800');
+
+                // Highlight Correct One
+                for (let btn of allBtns) {
+                    if (btn.textContent === quizData[currentQuestion].options.find(o => o.isCorrect).text) {
+                        btn.classList.add('border-emerald-500', 'bg-emerald-50', 'text-emerald-800');
+                    }
+                }
+
+                feedbackTitle.textContent = "Incorrect";
+                feedbackTitle.className = "font-bold text-rose-600";
+                feedbackIcon.textContent = "❌";
+                feedbackArea.className = "border rounded-lg p-4 mt-4 fade-in border-rose-200 bg-rose-50";
+            }
+
+            feedbackText.textContent = optionData.rationale;
+            feedbackArea.classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentQuestion++;
+            if (currentQuestion < quizData.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('progress-container').classList.add('hidden');
+            document.getElementById('results-screen').classList.remove('hidden');
+
+            document.getElementById('score-count').textContent = score;
+            document.getElementById('total-count').textContent = quizData.length;
+            
+            const percentage = Math.round((score / quizData.length) * 100);
+            document.getElementById('score-percentage').textContent = `${percentage}%`;
+            
+            // SVG Circle Logic (circumference 100)
+            const circle = document.getElementById('score-circle');
+            const circumference = 100; 
+            const offset = circumference - (percentage / 100) * circumference;
+            // The path provided is generic, adjusting dasharray
+            circle.setAttribute('d', "M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831");
+            circle.setAttribute('stroke-dasharray', `${percentage}, 100`);
+            
+            // Message
+            const msg = document.getElementById('score-message');
+            if (percentage >= 80) {
+                msg.innerHTML = `Excellent work! You've mastered the concepts.<br><span class="text-sm">Score: ${score}/${quizData.length}</span>`;
+            } else if (percentage >= 60) {
+                msg.innerHTML = `Good job. Review the rationales for the ones you missed.<br><span class="text-sm">Score: ${score}/${quizData.length}</span>`;
+            } else {
+                msg.innerHTML = `Keep practicing. Review the Lead-time and Overdiagnosis concepts again.<br><span class="text-sm">Score: ${score}/${quizData.length}</span>`;
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('results-screen').classList.add('hidden');
+            document.getElementById('start-screen').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

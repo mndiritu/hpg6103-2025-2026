@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screening Program Evaluator | Week 9 Epidemiology</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8fafc; /* Slate 50 - Warm Neutral Base */
+        }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+
+        /* Custom Scrollbar for sleek look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+        .tab-active {
+            border-bottom: 3px solid #0ea5e9; /* Sky 500 */
+            color: #0f172a; /* Slate 900 */
+            font-weight: 600;
+        }
+        .tab-inactive {
+            color: #64748b; /* Slate 500 */
+            border-bottom: 3px solid transparent;
+        }
+        .tab-inactive:hover {
+            color: #334155;
+            border-bottom: 3px solid #cbd5e1;
+        }
+
+        .bias-line {
+            transition: all 0.5s ease-in-out;
+        }
+    </style>
+    <!-- Chosen Palette: Slate (Neutrals) + Sky (Primary/Medical) + Rose (Harms/Alerts) -->
+    <!-- Application Structure Plan: Dashboard approach with top-level navigation tabs. 
+         1. Fundamentals: Interactive Definitions & Wilson-Jungner Checklist.
+         2. The Math (Simulator): Interactive Chart.js visualizations for PPV/Prevalence (The Screening Paradox).
+         3. Biases: CSS-based timeline animations to explain Lead-time/Length-time.
+         4. Evaluation: Benefits vs Harms matrix and Case Studies. 
+         Rationale: This structure moves from theory to quantitative analysis to application, facilitating a "Master's level" understanding flow. -->
+    <!-- Visualization & Content Choices: 
+         1. Report Info: "Screening Paradox" -> Goal: Demonstrate Low Prev = Low PPV -> Viz: Dynamic Line Chart + Stacked Bar -> Interaction: Sliders for Prev/Sens/Spec -> Chart.js.
+         2. Report Info: "Biases" -> Goal: Visualise time discrepancies -> Viz: HTML/CSS Timelines -> Interaction: Toggle "Screening" vs "Clinical" views -> Custom CSS.
+         3. Report Info: "Criteria" -> Goal: Active learning -> Viz: Interactive Checklist -> Interaction: Click to validate -> Vanilla JS. 
+         CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="text-slate-800">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center mr-4 pr-4 border-r border-slate-200">
+                        <a href="index.html" class="flex items-center text-slate-500 hover:text-sky-600 transition-colors" title="Back to Course Portal">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                            <span class="hidden md:inline ml-1 text-sm font-medium">Portal</span>
+                        </a>
+                    </div>
+                    <div class="flex-shrink-0 flex items-center">
+                        <span class="text-xl font-bold text-slate-800 tracking-tight">Screening<span class="text-sky-600">Evaluator</span></span>
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8" id="desktop-nav">
+                        <!-- Navigation items injected by JS -->
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <span class="text-sm text-slate-500 italic hidden md:block">HPG 6103: Week 9</span>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Nav -->
+        <div class="sm:hidden bg-white border-t border-gray-200 flex justify-around p-2" id="mobile-nav">
+            <!-- Mobile items injected by JS -->
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- SECTION 1: FOUNDATIONS -->
+        <section id="section-foundations" class="space-y-8">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <h2 class="text-2xl font-bold text-slate-900 mb-2">Core Foundations</h2>
+                <p class="text-slate-600 mb-6">
+                    Before evaluating a program, we must distinguish <strong>Screening</strong> from <strong>Early Diagnosis</strong> and <strong>Case-Finding</strong>. 
+                    Screening targets the <em>apparently healthy</em> population, which creates unique ethical and logistical challenges compared to clinical medicine.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Definition Cards -->
+                    <div class="bg-sky-50 rounded-lg p-5 border-l-4 border-sky-500 hover:shadow-md transition-shadow cursor-pointer group" onclick="toggleDef('def-screening')">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-sky-900">Screening</h3>
+                            <span class="text-sky-500 text-xl font-bold group-hover:scale-110 transition-transform">?</span>
+                        </div>
+                        <p class="text-sm text-sky-800 mt-2 font-semibold">Target: Healthy / Asymptomatic</p>
+                        <div id="def-screening" class="hidden mt-3 text-sm text-slate-700 bg-white p-3 rounded border border-sky-100 shadow-inner">
+                            <strong>Goal:</strong> Detect disease in the Preclinical Phase (DPCP).<br>
+                            <strong>Example:</strong> Mass HPV testing invitations.<br>
+                            <em>Key: Targets people who think they are well.</em>
+                        </div>
+                    </div>
+
+                    <div class="bg-orange-50 rounded-lg p-5 border-l-4 border-orange-500 hover:shadow-md transition-shadow cursor-pointer group" onclick="toggleDef('def-early')">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-orange-900">Early Diagnosis</h3>
+                            <span class="text-orange-500 text-xl font-bold group-hover:scale-110 transition-transform">?</span>
+                        </div>
+                        <p class="text-sm text-orange-800 mt-2 font-semibold">Target: Mild Symptoms</p>
+                        <div id="def-early" class="hidden mt-3 text-sm text-slate-700 bg-white p-3 rounded border border-orange-100 shadow-inner">
+                            <strong>Goal:</strong> Reduce diagnostic delay.<br>
+                            <strong>Example:</strong> Fast-track for breast lump.<br>
+                            <em>Key: Patient is already seeking help/symptomatic.</em>
+                        </div>
+                    </div>
+
+                    <div class="bg-emerald-50 rounded-lg p-5 border-l-4 border-emerald-500 hover:shadow-md transition-shadow cursor-pointer group" onclick="toggleDef('def-case')">
+                        <div class="flex items-center justify-between">
+                            <h3 class="font-bold text-emerald-900">Case-Finding</h3>
+                            <span class="text-emerald-500 text-xl font-bold group-hover:scale-110 transition-transform">?</span>
+                        </div>
+                        <p class="text-sm text-emerald-800 mt-2 font-semibold">Target: Clinic Attendees</p>
+                        <div id="def-case" class="hidden mt-3 text-sm text-slate-700 bg-white p-3 rounded border border-emerald-100 shadow-inner">
+                            <strong>Goal:</strong> Opportunistic detection.<br>
+                            <strong>Example:</strong> BP check during wound care.<br>
+                            <em>Key: Patient is already in the system.</em>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Wilson & Jungner Interactive -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <h3 class="text-xl font-bold text-slate-900 mb-4">Wilson & Jungner Evaluation Tool</h3>
+                <p class="text-slate-600 mb-4 text-sm">Use this checklist to evaluate a proposed screening program. All criteria should be met for a program to be justified.</p>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="space-y-3">
+                        <h4 class="font-bold text-slate-700 border-b pb-1">The Condition</h4>
+                        <label class="flex items-start gap-3 p-2 hover:bg-slate-50 rounded cursor-pointer">
+                            <input type="checkbox" class="wj-check mt-1 w-5 h-5 text-sky-600 rounded focus:ring-sky-500" onchange="updateWJStatus()">
+                            <span class="text-sm text-slate-600">Important health problem (High burden/cost)</span>
+                        </label>
+                        <label class="flex items-start gap-3 p-2 hover:bg-slate-50 rounded cursor-pointer">
+                            <input type="checkbox" class="wj-check mt-1 w-5 h-5 text-sky-600 rounded focus:ring-sky-500" onchange="updateWJStatus()">
+                            <span class="text-sm text-slate-600">Natural history well understood</span>
+                        </label>
+                        <label class="flex items-start gap-3 p-2 hover:bg-slate-50 rounded cursor-pointer">
+                            <input type="checkbox" class="wj-check mt-1 w-5 h-5 text-sky-600 rounded focus:ring-sky-500" onchange="updateWJStatus()">
+                            <span class="text-sm text-slate-600">Recognisable latent/early stage (DPCP)</span>
+                        </label>
+                    </div>
+
+                    <div class="space-y-3">
+                        <h4 class="font-bold text-slate-700 border-b pb-1">The Test</h4>
+                        <label class="flex items-start gap-3 p-2 hover:bg-slate-50 rounded cursor-pointer">
+                            <input type="checkbox" class="wj-check mt-1 w-5 h-5 text-sky-600 rounded focus:ring-sky-500" onchange="updateWJStatus()">
+                            <span class="text-sm text-slate-600">Valid (Adequate Sensitivity & Specificity)</span>
+                        </label>
+                        <label class="flex items-start gap-3 p-2 hover:bg-slate-50 rounded cursor-pointer">
+                            <input type="checkbox" class="wj-check mt-1 w-5 h-5 text-sky-600 rounded focus:ring-sky-500" onchange="updateWJStatus()">
+                            <span class="text-sm text-slate-600">Safe and Acceptable to population</span>
+                        </label>
+                        <label class="flex items-start gap-3 p-2 hover:bg-slate-50 rounded cursor-pointer">
+                            <input type="checkbox" class="wj-check mt-1 w-5 h-5 text-sky-600 rounded focus:ring-sky-500" onchange="updateWJStatus()">
+                            <span class="text-sm text-slate-600">Clear policy on who is a "case"</span>
+                        </label>
+                    </div>
+
+                    <div class="space-y-3">
+                        <h4 class="font-bold text-slate-700 border-b pb-1">System & Cost</h4>
+                        <label class="flex items-start gap-3 p-2 hover:bg-slate-50 rounded cursor-pointer">
+                            <input type="checkbox" class="wj-check mt-1 w-5 h-5 text-sky-600 rounded focus:ring-sky-500" onchange="updateWJStatus()">
+                            <span class="text-sm text-slate-600">Diagnosis & Treatment facilities ready</span>
+                        </label>
+                        <label class="flex items-start gap-3 p-2 hover:bg-slate-50 rounded cursor-pointer">
+                            <input type="checkbox" class="wj-check mt-1 w-5 h-5 text-sky-600 rounded focus:ring-sky-500" onchange="updateWJStatus()">
+                            <span class="text-sm text-slate-600">Balanced cost (Finding vs Treating)</span>
+                        </label>
+                        <label class="flex items-start gap-3 p-2 hover:bg-slate-50 rounded cursor-pointer">
+                            <input type="checkbox" class="wj-check mt-1 w-5 h-5 text-sky-600 rounded focus:ring-sky-500" onchange="updateWJStatus()">
+                            <span class="text-sm text-slate-600">Continuous process (Not one-off)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div id="wj-result" class="mt-6 p-4 rounded-lg bg-slate-100 text-center font-bold text-slate-500 transition-colors duration-300">
+                    Check all boxes to evaluate readiness.
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: THE MATH (SCREENING PARADOX) -->
+        <section id="section-math" class="space-y-8 hidden">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900">The Screening Paradox Simulator</h2>
+                        <p class="text-slate-600 mt-2 max-w-2xl">
+                            Screening occurs in <strong>low-prevalence</strong> populations. This simulation demonstrates how low prevalence decimates Positive Predictive Value (PPV), generating massive numbers of False Positives even with a "good" test.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <!-- Controls -->
+                    <div class="bg-slate-50 p-5 rounded-xl border border-slate-200 space-y-6">
+                        <h3 class="font-bold text-slate-800 border-b pb-2">Program Parameters</h3>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Prevalence (%)</label>
+                            <input type="range" id="slider-prev" min="0.1" max="20" step="0.1" value="1" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600">
+                            <div class="flex justify-between text-xs text-slate-500 mt-1">
+                                <span>0.1% (Rare)</span>
+                                <span id="val-prev" class="font-bold text-sky-700 text-base">1.0%</span>
+                                <span>20% (Common)</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Test Sensitivity (%)</label>
+                            <input type="range" id="slider-sens" min="50" max="99.9" step="0.1" value="90" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600">
+                            <div class="flex justify-between text-xs text-slate-500 mt-1">
+                                <span>50%</span>
+                                <span id="val-sens" class="font-bold text-sky-700 text-base">90.0%</span>
+                                <span>99.9%</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Test Specificity (%)</label>
+                            <input type="range" id="slider-spec" min="50" max="99.9" step="0.1" value="95" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-sky-600">
+                            <div class="flex justify-between text-xs text-slate-500 mt-1">
+                                <span>50%</span>
+                                <span id="val-spec" class="font-bold text-sky-700 text-base">95.0%</span>
+                                <span>99.9%</span>
+                            </div>
+                        </div>
+
+                        <div class="bg-sky-100 p-4 rounded-lg border border-sky-200">
+                            <div class="text-sm text-sky-900 font-bold mb-1">Resulting PPV</div>
+                            <div id="result-ppv" class="text-3xl font-extrabold text-sky-700">--%</div>
+                            <div class="text-xs text-sky-800 mt-1">Probability a positive test is real disease.</div>
+                        </div>
+                    </div>
+
+                    <!-- Visualizations -->
+                    <div class="lg:col-span-2 space-y-8">
+                        <!-- Chart 1: PPV Curve -->
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-500 uppercase tracking-wide mb-2">Impact of Prevalence on PPV</h4>
+                            <div class="chart-container">
+                                <canvas id="chartPPVCurve"></canvas>
+                            </div>
+                        </div>
+                        
+                        <!-- Chart 2: Population Breakdown -->
+                        <div>
+                            <h4 class="text-sm font-bold text-slate-500 uppercase tracking-wide mb-2">Population Impact (Per 10,000 People)</h4>
+                            <div class="chart-container" style="height: 200px;">
+                                <canvas id="chartPopulation"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 bg-yellow-50 border-l-4 border-yellow-400 p-4">
+                    <p class="text-sm text-yellow-800">
+                        <strong>Takeaway:</strong> Even with 95% specificity, at 1% prevalence, the PPV is often low (~15%). Most positives are false alarms. This necessitates a <strong>Two-Step Design</strong>: Screen with a cheap sensitive test, confirm with a high-specificity test.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: BIASES -->
+        <section id="section-biases" class="space-y-8 hidden">
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <h2 class="text-2xl font-bold text-slate-900 mb-4">Biases in Screening Evaluation</h2>
+                <p class="text-slate-600 mb-8">
+                    When screening seems to "improve survival," we must rule out artifacts. Toggle the visualizations below to see how screening distorts our perception of time and severity.
+                </p>
+
+                <!-- Lead Time Bias -->
+                <div class="mb-12">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-bold text-slate-800">A. Lead-Time Bias (The "Clock-Start" Error)</h3>
+                        <button onclick="toggleLeadTime()" class="px-4 py-2 bg-sky-600 text-white rounded shadow hover:bg-sky-700 text-sm font-medium transition-colors">Toggle: Screening Effect</button>
+                    </div>
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 relative overflow-hidden" style="min-height: 200px;">
+                        <!-- Timeline Base -->
+                        <div class="absolute top-1/2 left-10 right-10 h-1 bg-slate-300 transform -translate-y-1/2"></div>
+                        
+                        <!-- Fixed Point: Disease Onset -->
+                        <div class="absolute top-1/2 left-10 transform -translate-y-1/2 -ml-2 text-center">
+                            <div class="w-4 h-4 bg-slate-400 rounded-full mb-2 mx-auto"></div>
+                            <span class="text-xs font-bold text-slate-500">Disease<br>Onset</span>
+                        </div>
+
+                        <!-- Fixed Point: Death -->
+                        <div class="absolute top-1/2 right-10 transform -translate-y-1/2 -mr-2 text-center">
+                            <div class="w-4 h-4 bg-slate-800 rounded-full mb-2 mx-auto"></div>
+                            <span class="text-xs font-bold text-slate-800">Death<br>(Unchanged)</span>
+                        </div>
+
+                        <!-- Dynamic Point: Clinical Diagnosis -->
+                        <div id="clinical-dx" class="absolute top-1/2 left-2/3 transform -translate-y-1/2 -ml-2 text-center transition-all duration-700">
+                            <div class="w-4 h-4 bg-orange-500 rounded-full mb-2 mx-auto shadow-lg shadow-orange-500/50"></div>
+                            <span class="text-xs font-bold text-orange-600">Clinical<br>Diagnosis</span>
+                        </div>
+
+                        <!-- Dynamic Point: Screening Diagnosis -->
+                        <div id="screening-dx" class="absolute top-1/2 left-1/3 transform -translate-y-1/2 -ml-2 text-center transition-all duration-700 opacity-0">
+                            <div class="w-4 h-4 bg-sky-500 rounded-full mb-2 mx-auto shadow-lg shadow-sky-500/50"></div>
+                            <span class="text-xs font-bold text-sky-600">Screening<br>Detection</span>
+                        </div>
+
+                        <!-- Survival Lines -->
+                        <div id="line-clinical" class="absolute top-1/2 left-2/3 right-10 h-1 bg-orange-300 transform -translate-y-1/2 transition-all duration-700"></div>
+                        <div id="line-screening" class="absolute top-1/2 left-1/3 right-10 h-1 bg-sky-300 transform -translate-y-1/2 opacity-0 transition-all duration-700"></div>
+
+                        <!-- Labels -->
+                        <div class="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-center">
+                            <span id="label-survival" class="text-orange-600 font-bold text-lg">Perceived Survival: Short</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Length Time Bias -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                        <h3 class="text-lg font-bold text-slate-800 mb-2">B. Length-Time Bias</h3>
+                        <p class="text-sm text-slate-600 mb-4">Screening acts like a net dipped into a river at intervals. It catches "slow fish" (indolent disease) but misses "fast fish" (aggressive disease) which swim through between dips.</p>
+                        <div class="h-40 relative border-t-2 border-b-2 border-dashed border-slate-300 bg-white overflow-hidden">
+                            <!-- Visual representation -->
+                            <div class="absolute top-0 bottom-0 left-1/4 w-1 bg-sky-500 opacity-20"></div>
+                            <div class="absolute top-0 bottom-0 left-3/4 w-1 bg-sky-500 opacity-20"></div>
+                            
+                            <!-- Slow Tumor -->
+                            <div class="absolute top-10 left-10 w-40 h-4 bg-emerald-400 rounded-full opacity-80 flex items-center justify-center text-[10px] text-white font-bold">Slow Growing</div>
+                            <!-- Fast Tumor -->
+                            <div class="absolute top-24 left-1/3 w-10 h-4 bg-rose-500 rounded-full opacity-80 flex items-center justify-center text-[10px] text-white font-bold">Fast</div>
+                            
+                            <div class="absolute bottom-2 left-2 text-xs text-slate-400">Screening Intervals (Vertical Lines)</div>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-2"><strong>Result:</strong> Screened group has "better" prognosis because we selected the milder cases.</p>
+                    </div>
+
+                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                        <h3 class="text-lg font-bold text-slate-800 mb-2">C. Overdiagnosis</h3>
+                        <p class="text-sm text-slate-600 mb-4">Detecting disease that meets pathological criteria but would <strong>never</strong> cause symptoms or death in the patient's remaining lifetime.</p>
+                        <div class="flex items-center justify-center h-40 bg-white rounded border border-slate-200">
+                            <div class="text-center">
+                                <span class="text-5xl">🐢</span>
+                                <div class="mt-2 text-sm font-bold text-emerald-600">The "Turtle"</div>
+                                <div class="text-xs text-slate-500">Harmles if left alone.<br>Harmful if treated.</div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-2"><strong>Harm:</strong> Leads to overtreatment (surgery, radiation) without benefit.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: CASE STUDIES & EVALUATION -->
+        <section id="section-cases" class="space-y-8 hidden">
+            
+            <!-- Net Benefit -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <h2 class="text-2xl font-bold text-slate-900 mb-4">Balancing Harms & Benefits</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-rose-50 p-5 rounded-lg border border-rose-100">
+                        <h3 class="text-lg font-bold text-rose-800 mb-3 flex items-center"><span class="mr-2">⚠</span> Harms</h3>
+                        <ul class="space-y-2 text-sm text-rose-900">
+                            <li>• <strong>Physical:</strong> Pain, perforation (colonoscopy), radiation.</li>
+                            <li>• <strong>Psychological:</strong> Anxiety, "labeling" effect, stigma.</li>
+                            <li>• <strong>Financial:</strong> Out-of-pocket costs, lost wages.</li>
+                            <li>• <strong>System:</strong> Opportunity cost (diverting funds from treatment).</li>
+                        </ul>
+                    </div>
+                    <div class="bg-sky-50 p-5 rounded-lg border border-sky-100">
+                        <h3 class="text-lg font-bold text-sky-800 mb-3 flex items-center"><span class="mr-2">♥</span> Benefits</h3>
+                        <ul class="space-y-2 text-sm text-sky-900">
+                            <li>• <strong>Mortality Reduction:</strong> Disease-specific death rates drop.</li>
+                            <li>• <strong>Morbidity Reduction:</strong> Less radical treatment needed if found early.</li>
+                            <li>• <strong>Quality of Life:</strong> Reassurance for negatives.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Case Studies Accordion -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+                <h2 class="text-2xl font-bold text-slate-900 mb-6">Applied Case Studies</h2>
+                <p class="text-slate-600 mb-4">Apply the criteria and bias concepts to these real-world scenarios.</p>
+
+                <div class="space-y-4">
+                    <!-- Case 1 -->
+                    <div class="border border-slate-200 rounded-lg overflow-hidden">
+                        <button onclick="toggleAccordion('case1')" class="w-full px-6 py-4 text-left bg-slate-50 hover:bg-slate-100 flex justify-between items-center transition-colors">
+                            <span class="font-bold text-slate-800">Scenario: Prostate Cancer (PSA)</span>
+                            <span id="icon-case1" class="text-slate-400 text-xl transform transition-transform">+</span>
+                        </button>
+                        <div id="case1" class="hidden px-6 py-4 bg-white border-t border-slate-200">
+                            <p class="text-sm text-slate-600 mb-3"><strong>Proposal:</strong> PSA testing for all men over 50 in County X.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <div class="bg-yellow-50 p-3 rounded text-yellow-900">
+                                    <strong>Critical Critique:</strong> High risk of <em>Overdiagnosis</em>. Many prostate cancers are indolent ("turtles"). Treating them causes incontinence/impotence without extending life.
+                                </div>
+                                <div class="bg-slate-50 p-3 rounded text-slate-700">
+                                    <strong>Checklist Check:</strong> Does the test distinguish aggressive vs indolent disease? (Often No). Is the Net Benefit positive? (Debatable).
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Case 2 -->
+                    <div class="border border-slate-200 rounded-lg overflow-hidden">
+                        <button onclick="toggleAccordion('case2')" class="w-full px-6 py-4 text-left bg-slate-50 hover:bg-slate-100 flex justify-between items-center transition-colors">
+                            <span class="font-bold text-slate-800">Scenario: Cervical Cancer (LMIC Context)</span>
+                            <span id="icon-case2" class="text-slate-400 text-xl transform transition-transform">+</span>
+                        </button>
+                        <div id="case2" class="hidden px-6 py-4 bg-white border-t border-slate-200">
+                            <p class="text-sm text-slate-600 mb-3"><strong>Strategy:</strong> VIA (Visual Inspection with Acetic Acid) + Cryotherapy ("See and Treat").</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <div class="bg-emerald-50 p-3 rounded text-emerald-900">
+                                    <strong>Design Logic:</strong> Solves the "Loss to Follow-up" problem. VIA is sensitive (Step 1) but not specific. Treating immediately removes the need for patient return.
+                                </div>
+                                <div class="bg-slate-50 p-3 rounded text-slate-700">
+                                    <strong>Checklist Check:</strong> Test suitable? (Yes, cheap/simple). Facilities ready? (Cryo must be available).
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-800 text-slate-400 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-sm">Epidemiological Methods I | Week 9 SPA Resource</p>
+            <p class="text-xs mt-2 text-slate-500">Generated for Educational Purposes</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- Navigation Logic ---
+        const sections = [
+            { id: 'foundations', label: '1. Foundations & Criteria' },
+            { id: 'math', label: '2. The Screening Paradox' },
+            { id: 'biases', label: '3. Biases' },
+            { id: 'cases', label: '4. Evaluation & Cases' }
+        ];
+
+        let activeSection = 'foundations';
+
+        function initNav() {
+            const desktopNav = document.getElementById('desktop-nav');
+            const mobileNav = document.getElementById('mobile-nav');
+            
+            desktopNav.innerHTML = '';
+            mobileNav.innerHTML = '';
+
+            sections.forEach(sec => {
+                // Desktop
+                const btn = document.createElement('button');
+                btn.className = `px-3 py-2 text-sm font-medium rounded-md transition-colors ${activeSection === sec.id ? 'bg-sky-50 text-sky-700' : 'text-slate-500 hover:text-slate-700 hover:bg-slate-50'}`;
+                btn.innerText = sec.label;
+                btn.onclick = () => switchSection(sec.id);
+                desktopNav.appendChild(btn);
+
+                // Mobile
+                const mBtn = document.createElement('button');
+                mBtn.className = `p-2 text-xs font-bold rounded ${activeSection === sec.id ? 'text-sky-600 bg-sky-50' : 'text-slate-500'}`;
+                mBtn.innerText = sec.label.split('.')[0]; // Just the number/short label
+                mBtn.onclick = () => switchSection(sec.id);
+                mobileNav.appendChild(mBtn);
+            });
+        }
+
+        function switchSection(id) {
+            activeSection = id;
+            initNav(); // Re-render to update active state styles
+            
+            // Hide all sections
+            sections.forEach(sec => {
+                document.getElementById(`section-${sec.id}`).classList.add('hidden');
+            });
+            // Show active
+            document.getElementById(`section-${id}`).classList.remove('hidden');
+
+            // Resize charts if switching to math section
+            if(id === 'math' && ppvChart) {
+                setTimeout(() => {
+                    ppvChart.resize();
+                    popChart.resize();
+                }, 100);
+            }
+        }
+
+        // --- Interactive Definitions ---
+        function toggleDef(id) {
+            const el = document.getElementById(id);
+            el.classList.toggle('hidden');
+        }
+
+        // --- Wilson & Jungner Logic ---
+        function updateWJStatus() {
+            const checks = document.querySelectorAll('.wj-check');
+            const resultBox = document.getElementById('wj-result');
+            let checkedCount = 0;
+            
+            checks.forEach(c => { if(c.checked) checkedCount++; });
+
+            if(checkedCount === 0) {
+                resultBox.className = "mt-6 p-4 rounded-lg bg-slate-100 text-center font-bold text-slate-500";
+                resultBox.innerText = "Check all boxes to evaluate readiness.";
+            } else if (checkedCount === checks.length) {
+                resultBox.className = "mt-6 p-4 rounded-lg bg-emerald-100 text-center font-bold text-emerald-700 border border-emerald-300";
+                resultBox.innerText = "CRITERIA MET: Program is justifiable.";
+            } else {
+                resultBox.className = "mt-6 p-4 rounded-lg bg-yellow-50 text-center font-bold text-yellow-700 border border-yellow-200";
+                resultBox.innerText = `Criteria Incomplete (${checkedCount}/${checks.length}). Addressing gaps helps prevent failure.`;
+            }
+        }
+
+        // --- Biases Logic (Lead Time) ---
+        let leadTimeActive = false;
+        function toggleLeadTime() {
+            leadTimeActive = !leadTimeActive;
+            const btn = document.querySelector('button[onclick="toggleLeadTime()"]');
+            const screenDot = document.getElementById('screening-dx');
+            const screenLine = document.getElementById('line-screening');
+            const label = document.getElementById('label-survival');
+
+            if(leadTimeActive) {
+                btn.innerText = "Reset View";
+                screenDot.classList.remove('opacity-0');
+                screenLine.classList.remove('opacity-0');
+                label.innerText = "Perceived Survival: LONG (Artificial Increase)";
+                label.classList.replace('text-orange-600', 'text-sky-600');
+            } else {
+                btn.innerText = "Toggle: Screening Effect";
+                screenDot.classList.add('opacity-0');
+                screenLine.classList.add('opacity-0');
+                label.innerText = "Perceived Survival: Short";
+                label.classList.replace('text-sky-600', 'text-orange-600');
+            }
+        }
+
+        // --- Accordion Logic ---
+        function toggleAccordion(id) {
+            const content = document.getElementById(id);
+            const icon = document.getElementById(`icon-${id}`);
+            if (content.classList.contains('hidden')) {
+                content.classList.remove('hidden');
+                icon.innerText = '-';
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                content.classList.add('hidden');
+                icon.innerText = '+';
+            }
+        }
+
+        // --- THE MATH: Chart.js Logic ---
+        let ppvChart, popChart;
+
+        function initCharts() {
+            // Chart 1: PPV Curve
+            const ctx1 = document.getElementById('chartPPVCurve').getContext('2d');
+            ppvChart = new Chart(ctx1, {
+                type: 'line',
+                data: {
+                    labels: [], // Populated dynamically
+                    datasets: [{
+                        label: 'Positive Predictive Value (PPV)',
+                        data: [],
+                        borderColor: '#0ea5e9', // Sky 500
+                        backgroundColor: 'rgba(14, 165, 233, 0.1)',
+                        borderWidth: 3,
+                        pointRadius: 0,
+                        fill: true,
+                        tension: 0.4
+                    },
+                    {
+                        label: 'Current Position',
+                        data: [],
+                        pointRadius: 6,
+                        pointBackgroundColor: '#ea580c', // Orange 600
+                        showLine: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.parsed.y.toFixed(1) + '%';
+                                }
+                            }
+                        },
+                        legend: { display: true }
+                    },
+                    scales: {
+                        x: { 
+                            title: { display: true, text: 'Prevalence (%)' },
+                            type: 'linear',
+                            min: 0,
+                            max: 20
+                        },
+                        y: { 
+                            title: { display: true, text: 'PPV (%)' },
+                            min: 0, 
+                            max: 100 
+                        }
+                    }
+                }
+            });
+
+            // Chart 2: Population Stacked Bar
+            const ctx2 = document.getElementById('chartPopulation').getContext('2d');
+            popChart = new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['Test Positive Population'],
+                    datasets: [
+                        {
+                            label: 'True Positives (Real Disease)',
+                            data: [0],
+                            backgroundColor: '#0ea5e9', // Sky 500
+                        },
+                        {
+                            label: 'False Positives (False Alarm)',
+                            data: [0],
+                            backgroundColor: '#fbbf24', // Amber 400
+                        }
+                    ]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.raw.toFixed(0) + ' people';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { stacked: true, title: {display: true, text: 'Number of People'} },
+                        y: { stacked: true }
+                    }
+                }
+            });
+
+            updateSimulation();
+        }
+
+        function calculatePPV(prev, sens, spec) {
+            // prev, sens, spec as decimals (0-1)
+            const num = sens * prev;
+            const den = (sens * prev) + ((1 - spec) * (1 - prev));
+            return (num / den) * 100;
+        }
+
+        function updateSimulation() {
+            const prevVal = parseFloat(document.getElementById('slider-prev').value);
+            const sensVal = parseFloat(document.getElementById('slider-sens').value);
+            const specVal = parseFloat(document.getElementById('slider-spec').value);
+
+            // Update UI Labels
+            document.getElementById('val-prev').innerText = prevVal.toFixed(1) + '%';
+            document.getElementById('val-sens').innerText = sensVal.toFixed(1) + '%';
+            document.getElementById('val-spec').innerText = specVal.toFixed(1) + '%';
+
+            const prev = prevVal / 100;
+            const sens = sensVal / 100;
+            const spec = specVal / 100;
+
+            // 1. Update Result Text
+            const ppv = calculatePPV(prev, sens, spec);
+            document.getElementById('result-ppv').innerText = ppv.toFixed(1) + '%';
+
+            // 2. Update Curve Chart (Generate data points for 0.1% to 20% prevalence)
+            const curveData = [];
+            const labels = [];
+            for(let p = 0.1; p <= 20; p += 0.5) {
+                curveData.push({x: p, y: calculatePPV(p/100, sens, spec)});
+                labels.push(p);
+            }
+            ppvChart.data.datasets[0].data = curveData;
+            ppvChart.data.datasets[1].data = [{x: prevVal, y: ppv}]; // Current point indicator
+            ppvChart.update();
+
+            // 3. Update Population Chart (Base 10,000)
+            const totalPop = 10000;
+            const diseasePos = totalPop * prev;
+            const diseaseNeg = totalPop * (1 - prev);
+            
+            const truePos = diseasePos * sens;
+            const falsePos = diseaseNeg * (1 - spec); // 1 - spec = False Positive Rate
+
+            popChart.data.datasets[0].data = [truePos];
+            popChart.data.datasets[1].data = [falsePos];
+            popChart.update();
+        }
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initNav();
+            initCharts();
+
+            // Event Listeners for Sliders
+            ['slider-prev', 'slider-sens', 'slider-spec'].forEach(id => {
+                document.getElementById(id).addEventListener('input', updateSimulation);
+            });
+        });
+
+    </script>
+</body>
+</html>

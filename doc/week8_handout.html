@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture 8 Handout</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style> 
+        body { font-family: 'Inter', sans-serif; } 
+        @media print {
+            .no-print { display: none; }
+            body { background: white; color: black; }
+            .shadow-sm, .border { box-shadow: none; border: none; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <div class="max-w-5xl mx-auto my-8 bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        
+        <!-- Header -->
+        <div class="bg-indigo-900 px-8 py-10 text-white">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h2 class="text-indigo-200 text-sm font-bold uppercase tracking-wide mb-2">HPG 6103 • Epidemiological Methods I</h2>
+                    <h1 class="text-3xl font-bold">Sources of Public Health Data</h1>
+                    <p class="text-indigo-200 mt-2">Lecture 8 Companion Handout</p>
+                </div>
+                <button onclick="window.print()" class="no-print bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors backdrop-blur-sm border border-white/20">
+                    Print / Save PDF
+                </button>
+            </div>
+        </div>
+
+        <div class="p-10 space-y-12">
+
+            <!-- 1. Why this matters -->
+            <section>
+                <div class="flex items-start gap-4">
+                    <span class="text-4xl font-bold text-indigo-100 -mt-2 select-none">01</span>
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 mb-4">Why This Lecture Matters</h2>
+                        <p class="text-slate-600 leading-relaxed mb-4">
+                            In previous weeks you’ve worked on defining populations, study designs, and power calculations. All of that assumes that data already exist and are trustworthy. Today we ask: <strong>Where do these numbers actually come from?</strong>
+                        </p>
+                        <div class="bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-r-lg">
+                            <p class="text-indigo-900 font-medium">As an MSc student, never accept a number without asking:</p>
+                            <ul class="list-disc list-inside mt-2 text-indigo-800 text-sm space-y-1">
+                                <li>What data source produced this figure?</li>
+                                <li>Who was counted – and who was left out?</li>
+                                <li>Is this source appropriate for the question being answered?</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Data Ecosystem -->
+            <section>
+                <div class="flex items-start gap-4">
+                    <span class="text-4xl font-bold text-indigo-100 -mt-2 select-none">02</span>
+                    <div class="w-full">
+                        <h2 class="text-2xl font-bold text-slate-900 mb-6">The Data Ecosystem: The Funnel</h2>
+                        <div class="grid gap-4 border-l-2 border-indigo-100 pl-6">
+                            <div class="relative">
+                                <span class="absolute -left-[33px] bg-indigo-100 text-indigo-600 rounded-full w-4 h-4 mt-1.5"></span>
+                                <h3 class="font-bold text-slate-900">1. Reality</h3>
+                                <p class="text-sm text-slate-600">People living their lives, getting sick, seeking care (or not). The full, messy truth we never observe perfectly.</p>
+                            </div>
+                            <div class="relative">
+                                <span class="absolute -left-[33px] bg-indigo-200 text-indigo-700 rounded-full w-4 h-4 mt-1.5"></span>
+                                <h3 class="font-bold text-slate-900">2. Records</h3>
+                                <p class="text-sm text-slate-600">Registers, EMRs, survey questionnaires. Only a fraction of reality gets written down.</p>
+                            </div>
+                            <div class="relative">
+                                <span class="absolute -left-[33px] bg-indigo-400 text-indigo-800 rounded-full w-4 h-4 mt-1.5"></span>
+                                <h3 class="font-bold text-slate-900">3. Databases</h3>
+                                <p class="text-sm text-slate-600">KHIS/DHIS2, KDHS datasets. Data are cleaned, coded, and aggregated.</p>
+                            </div>
+                            <div class="relative">
+                                <span class="absolute -left-[33px] bg-indigo-600 text-white rounded-full w-4 h-4 mt-1.5"></span>
+                                <h3 class="font-bold text-slate-900">4. Global Models & Policy</h3>
+                                <p class="text-sm text-slate-600">WHO/GBD estimates used to allocate budgets. Every number here has survived multiple layers of filtering.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Main Data Sources -->
+            <section>
+                <div class="flex items-start gap-4">
+                    <span class="text-4xl font-bold text-indigo-100 -mt-2 select-none">03</span>
+                    <div class="w-full space-y-8">
+                        <h2 class="text-2xl font-bold text-slate-900">Main Types of Public Health Data</h2>
+
+                        <!-- 3.1 Routine -->
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                            <h3 class="text-lg font-bold text-indigo-700 mb-3">3.1 Routine Health Facility Data (e.g., KHIS)</h3>
+                            <p class="text-sm text-slate-600 mb-4">Data generated during everyday care (Registers, EMRs). Aggregated into KHIS/DHIS2.</p>
+                            <div class="grid md:grid-cols-2 gap-6 text-sm">
+                                <div>
+                                    <strong class="block text-slate-900 mb-2">Strengths</strong>
+                                    <ul class="list-disc list-inside text-slate-600 space-y-1">
+                                        <li>Continuous, high-frequency (monthly).</li>
+                                        <li>Good for trends and logistics.</li>
+                                        <li>Granular (facility/sub-county level).</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong class="block text-slate-900 mb-2">Limitations</strong>
+                                    <ul class="list-disc list-inside text-slate-600 space-y-1">
+                                        <li><span class="text-rose-600 font-semibold">Selection Bias:</span> Only represents service users.</li>
+                                        <li>Vulnerable to reporting rate changes.</li>
+                                        <li>Data quality issues (completeness).</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3.2 Surveys -->
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                            <h3 class="text-lg font-bold text-indigo-700 mb-3">3.2 Population-Based Surveys (e.g., KDHS, STEPs)</h3>
+                            <p class="text-sm text-slate-600 mb-4">Carefully designed probability samples (e.g., KNBS Census frame) to represent the whole population.</p>
+                            <div class="grid md:grid-cols-2 gap-6 text-sm">
+                                <div>
+                                    <strong class="block text-slate-900 mb-2">Strengths</strong>
+                                    <ul class="list-disc list-inside text-slate-600 space-y-1">
+                                        <li>Gold standard for <strong>prevalence</strong>.</li>
+                                        <li>Captures those who don't seek care.</li>
+                                        <li>Detailed risk factor data.</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <strong class="block text-slate-900 mb-2">Limitations</strong>
+                                    <ul class="list-disc list-inside text-slate-600 space-y-1">
+                                        <li>Expensive and infrequent (every 5 years).</li>
+                                        <li>Poor for outbreaks/real-time monitoring.</li>
+                                        <li>Not good for small geographic areas.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3.3 CRVS -->
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                            <h3 class="text-lg font-bold text-indigo-700 mb-3">3.3 Civil Registration (CRVS)</h3>
+                            <p class="text-sm text-slate-600">
+                                <strong>Goal:</strong> Capture every birth and death with medically certified causes. <br>
+                                <strong>Reality in LMICs:</strong> Incomplete coverage. Home deaths often missed or coded as "old age." Essential for mortality trends, but often requires statistical adjustment.
+                            </p>
+                        </div>
+
+                        <!-- 3.4 Surveillance -->
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                            <h3 class="text-lg font-bold text-indigo-700 mb-3">3.4 Surveillance & Registries</h3>
+                            <div class="grid md:grid-cols-2 gap-4 text-sm text-slate-600">
+                                <p><strong>IDSR:</strong> Speed over completeness. Used for outbreak detection (cholera, measles).</p>
+                                <p><strong>Registries (Cancer/Trauma):</strong> Detailed longitudinal data on specific conditions. High quality but often limited scope.</p>
+                                <p><strong>HDSS (Kilifi/Nairobi):</strong> "Demographic laboratories" following defined populations over decades.</p>
+                            </div>
+                        </div>
+
+                        <!-- 3.5 Global Models -->
+                        <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
+                            <h3 class="text-lg font-bold text-indigo-700 mb-3">3.5 Global Models (WHO, GBD)</h3>
+                            <p class="text-sm text-slate-600">
+                                They compile country data, clean it, and model missing values. Great for <strong>cross-country comparisons</strong> and macro-trends, but remember: <span class="italic">many figures are estimates, not direct observations.</span>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. Data Quality -->
+            <section>
+                <div class="flex items-start gap-4">
+                    <span class="text-4xl font-bold text-indigo-100 -mt-2 select-none">04</span>
+                    <div class="w-full">
+                        <h2 class="text-2xl font-bold text-slate-900 mb-4">Data Quality: Common Villains</h2>
+                        <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <li class="p-4 bg-slate-50 rounded border border-slate-100">
+                                <strong class="text-indigo-900 block mb-1">Completeness</strong>
+                                <span class="text-sm text-slate-600">Are facilities missing? Are registers blank? Under-reporting is common.</span>
+                            </li>
+                            <li class="p-4 bg-slate-50 rounded border border-slate-100">
+                                <strong class="text-indigo-900 block mb-1">Accuracy</strong>
+                                <span class="text-sm text-slate-600">Misclassification? Age "heaping" (rounding to 30, 40)? Guessed diagnoses?</span>
+                            </li>
+                            <li class="p-4 bg-slate-50 rounded border border-slate-100">
+                                <strong class="text-indigo-900 block mb-1">Timeliness</strong>
+                                <span class="text-sm text-slate-600">How old is the data? Is it reported fast enough for outbreak response?</span>
+                            </li>
+                            <li class="p-4 bg-slate-50 rounded border border-slate-100">
+                                <strong class="text-indigo-900 block mb-1">Consistency</strong>
+                                <span class="text-sm text-slate-600">Did definitions change? A sudden "spike" might just be a new reporting tool.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. Case Studies -->
+            <section>
+                <div class="flex items-start gap-4">
+                    <span class="text-4xl font-bold text-indigo-100 -mt-2 select-none">05</span>
+                    <div class="w-full space-y-6">
+                        <h2 class="text-2xl font-bold text-slate-900">Choosing a Source: Case Studies</h2>
+                        
+                        <!-- Case 1 -->
+                        <div class="border-l-4 border-emerald-500 bg-emerald-50 p-6 rounded-r-lg">
+                            <h3 class="font-bold text-emerald-900 text-lg mb-2">Example 1: Hypertension in Kiambu</h3>
+                            <p class="text-emerald-800 text-sm italic mb-3">"What is the prevalence of hypertension among adults?"</p>
+                            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <strong class="text-emerald-900">Bad Source: KHIS</strong>
+                                    <p class="text-emerald-700">Clinic counts only capture those who seek care (Selection Bias). Misses the undiagnosed.</p>
+                                </div>
+                                <div>
+                                    <strong class="text-emerald-900">Best Source: STEPs Survey</strong>
+                                    <p class="text-emerald-700">Active screening of a random sample captures the true burden.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Case 2 -->
+                        <div class="border-l-4 border-sky-500 bg-sky-50 p-6 rounded-r-lg">
+                            <h3 class="font-bold text-sky-900 text-lg mb-2">Example 2: Maternal Mortality Trends</h3>
+                            <p class="text-sky-800 text-sm italic mb-3">"Has maternal mortality decreased in Kenya over the last 10 years?"</p>
+                            <div class="grid md:grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <strong class="text-sky-900">Challenge</strong>
+                                    <p class="text-sky-700">Improved reporting systems can make mortality look like it's rising (Artifact).</p>
+                                </div>
+                                <div>
+                                    <strong class="text-sky-900">Strategy: Triangulation</strong>
+                                    <p class="text-sky-700">Compare CRVS, KDHS estimates, and WHO models. Look for convergence.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. Reflection -->
+            <section>
+                <div class="flex items-start gap-4">
+                    <span class="text-4xl font-bold text-indigo-100 -mt-2 select-none">06</span>
+                    <div class="w-full">
+                        <h2 class="text-2xl font-bold text-slate-900 mb-4">Reflection & Practice</h2>
+                        <div class="bg-slate-50 p-6 rounded-lg border border-slate-200">
+                            <h3 class="font-bold text-slate-800 mb-3">Matching Exercise</h3>
+                            <p class="text-sm text-slate-600 mb-4">For each question, suggested the most appropriate data source:</p>
+                            <ul class="space-y-3 text-sm text-slate-700">
+                                <li class="flex gap-3">
+                                    <span class="bg-white border border-slate-200 px-2 rounded text-slate-500 font-mono">A</span>
+                                    <span>"What proportion of children are fully immunised?" <strong>(KDHS)</strong></span>
+                                </li>
+                                <li class="flex gap-3">
+                                    <span class="bg-white border border-slate-200 px-2 rounded text-slate-500 font-mono">B</span>
+                                    <span>"Did free maternity services increase facility deliveries?" <strong>(KHIS - Routine)</strong></span>
+                                </li>
+                                <li class="flex gap-3">
+                                    <span class="bg-white border border-slate-200 px-2 rounded text-slate-500 font-mono">C</span>
+                                    <span>"What is the incidence of cervical cancer in Nairobi?" <strong>(Cancer Registry)</strong></span>
+                                </li>
+                                <li class="flex gap-3">
+                                    <span class="bg-white border border-slate-200 px-2 rounded text-slate-500 font-mono">D</span>
+                                    <span>"How does Kenya's stroke mortality compare to Tanzania's?" <strong>(GBD/WHO Model)</strong></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. Take Home -->
+            <section class="mt-8 bg-indigo-900 text-white p-8 rounded-xl">
+                <h2 class="text-xl font-bold mb-4">Take-Home Messages</h2>
+                <ul class="list-disc list-inside space-y-2 text-indigo-100">
+                    <li>Numbers in public health are not neutral facts; they are products of specific systems.</li>
+                    <li>Always ask: <strong>"According to which data source?"</strong></li>
+                    <li>Match source → question → level of decision.</li>
+                    <li>No single source is perfect; <strong>triangulation</strong> is powerful.</li>
+                    <li>Protecting data quality is a core professional responsibility for epidemiologists.</li>
+                </ul>
+            </section>
+
+        </div>
+
+        <div class="bg-slate-100 px-8 py-6 border-t border-slate-200 flex justify-between items-center text-sm text-slate-500">
+            <a href="index.html" class="hover:text-indigo-600 transition-colors no-print">← Back to Course Portal</a>
+            <span>© University of Nairobi</span>
+        </div>
+
+    </div>
+
+</body>
+</html>

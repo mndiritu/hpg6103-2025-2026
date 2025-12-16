@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Sources Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <style> 
+        body { font-family: 'Inter', sans-serif; } 
+        .ph { vertical-align: middle; }
+        .fade-in { animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-slate-50 flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <div class="w-full bg-white shadow-sm py-4 px-6 flex justify-between items-center border-b border-slate-200 mb-8 sticky top-0 z-10">
+        <div class="font-bold text-slate-800 text-lg flex items-center gap-2">
+             <a href="index.html" class="text-slate-400 hover:text-sky-600 transition-colors flex items-center gap-1">
+                <i class="ph ph-arrow-counter-clockwise"></i> Portal
+             </a>
+             <span class="text-slate-300">/</span>
+             <span>Data Sources Quiz</span>
+        </div>
+        <div class="text-xs text-emerald-600 uppercase font-bold tracking-wider bg-emerald-50 px-3 py-1 rounded-full">Week 8 Practice</div>
+    </div>
+
+    <!-- Main Container -->
+    <div id="quiz-container" class="flex-grow flex flex-col items-center justify-center p-4">
+        <!-- Content injected via JS -->
+    </div>
+
+    <script>
+        // --- DATA ---
+        const quizQuestions = [
+          {
+            id: 1,
+            question: "Which data source is most appropriate for determining the true community prevalence of undiagnosed hypertension?",
+            options: [
+              { id: 'a', text: "Routine facility data (e.g., KHIS)", isCorrect: false },
+              { id: 'b', text: "A population-based survey (e.g., STEPs)", isCorrect: true },
+              { id: 'c', text: "Civil Registration (CRVS)", isCorrect: false },
+              { id: 'd', text: "NHIF claims database", isCorrect: false }
+            ],
+            rationale: "Population-based surveys involve active screening of a representative sample. Routine data only captures those who seek care (Selection Bias).",
+            hint: "Think about the 'Iceberg' concept."
+          },
+          {
+            id: 2,
+            question: "What is the primary limitation of using routine health facility data (KHIS)?",
+            options: [
+              { id: 'a', text: "Collected too infrequently", isCorrect: false },
+              { id: 'b', text: "Selection bias (only service users)", isCorrect: true },
+              { id: 'c', text: "Cannot be disaggregated geographically", isCorrect: false },
+              { id: 'd', text: "More expensive than surveys", isCorrect: false }
+            ],
+            rationale: "The fundamental flaw is selection bias; it excludes anyone who does not access the health system.",
+            hint: "If you are sick but stay home, are you counted?"
+          },
+          {
+            id: 3,
+            question: "A sudden, sharp increase in malaria cases in a single month is likely a 'data artifact' if:",
+            options: [
+              { id: 'a', text: "Vector population changed", isCorrect: false },
+              { id: 'b', text: "A new, more sensitive test was introduced", isCorrect: true },
+              { id: 'c', text: "There was heavy flooding", isCorrect: false },
+              { id: 'd', text: "Bed net usage dropped", isCorrect: false }
+            ],
+            rationale: "More sensitive tests detect cases that were previously missed, creating an artificial 'spike' in the trend line.",
+            hint: "Look for changes in measurement, not biology."
+          },
+          {
+            id: 4,
+            question: "Which system prioritizes 'speed' over completeness for outbreak detection?",
+            options: [
+              { id: 'a', text: "IDSR (Integrated Disease Surveillance)", isCorrect: true },
+              { id: 'b', text: "KDHS (Demographic Health Survey)", isCorrect: false },
+              { id: 'c', text: "CRVS", isCorrect: false },
+              { id: 'd', text: "Global Burden of Disease", isCorrect: false }
+            ],
+            rationale: "IDSR uses weekly reporting thresholds to catch acute threats early.",
+            hint: "Deals with 'notifiable' diseases."
+          },
+          {
+            id: 5,
+            question: "How do global platforms (WHO/GBD) generate estimates for countries with incomplete data?",
+            options: [
+              { id: 'a', text: "Use only raw reported numbers", isCorrect: false },
+              { id: 'b', text: "Statistical modeling and adjustment", isCorrect: true },
+              { id: 'c', text: "Conduct independent annual census", isCorrect: false },
+              { id: 'd', text: "Extrapolate from GDP", isCorrect: false }
+            ],
+            rationale: "They use complex models to fill gaps, borrowing strength from regional patterns.",
+            hint: "If not measured, it must be inferred."
+          },
+          {
+            id: 6,
+            question: "What is the primary role of a Census in epidemiology?",
+            options: [
+              { id: 'a', text: "Provide the denominator for rates", isCorrect: true },
+              { id: 'b', text: "Diagnose diseases", isCorrect: false },
+              { id: 'c', text: "Monitor outpatient attendance", isCorrect: false },
+              { id: 'd', text: "Track medicine stock", isCorrect: false }
+            ],
+            rationale: "The census counts the total population, which is the essential denominator for calculating rates.",
+            hint: "To calculate a rate, you need a numerator and a..."
+          },
+          {
+            id: 7,
+            question: "Reported ages clustering around 30, 40, 50 is known as:",
+            options: [
+              { id: 'a', text: "Age Heaping", isCorrect: true },
+              { id: 'b', text: "Selection Bias", isCorrect: false },
+              { id: 'c', text: "Confounding", isCorrect: false },
+              { id: 'd', text: "Recall Bias", isCorrect: false }
+            ],
+            rationale: "Age heaping (digit preference) occurs when respondents estimate ages.",
+            hint: "Piling up on round numbers."
+          },
+          {
+            id: 8,
+            question: "Why might CRVS mortality rates be misleading in rural Kenya?",
+            options: [
+              { id: 'a', text: "Certificates never issued", isCorrect: false },
+              { id: 'b', text: "Home deaths often unregistered/uncertified", isCorrect: true },
+              { id: 'c', text: "Rural data is perfect", isCorrect: false },
+              { id: 'd', text: "CRVS only tracks births", isCorrect: false }
+            ],
+            rationale: "Deaths occurring outside health facilities may be missed or lack a medical cause of death.",
+            hint: "Where does the death happen?"
+          },
+          {
+            id: 9,
+            question: "What is a key feature of HDSS sites like Kilifi?",
+            options: [
+              { id: 'a', text: "National coverage", isCorrect: false },
+              { id: 'b', text: "Longitudinal tracking of a specific population", isCorrect: true },
+              { id: 'c', text: "Hospital drug tracking", isCorrect: false },
+              { id: 'd', text: "Replaced by Census", isCorrect: false }
+            ],
+            rationale: "HDSS sites are 'demographic laboratories' tracking a cohort over time.",
+            hint: "Longitudinal study of a whole community."
+          },
+          {
+            id: 10,
+            question: "Comparing KHIS, Census, and WHO estimates to find the truth is called:",
+            options: [
+              { id: 'a', text: "Discarding data", isCorrect: false },
+              { id: 'b', text: "International bias", isCorrect: false },
+              { id: 'c', text: "Triangulation", isCorrect: true },
+              { id: 'd', text: "Census error", isCorrect: false }
+            ],
+            rationale: "Triangulation involves using multiple sources to cross-check findings.",
+            hint: "Looking for convergence."
+          }
+        ];
+
+        // --- STATE ---
+        let gameState = 'start'; // start, playing, summary
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let selectedOption = null;
+        let isAnswered = false;
+
+        const container = document.getElementById('quiz-container');
+
+        // --- RENDER ---
+        function render() {
+            container.innerHTML = '';
+            container.className = "flex-grow flex flex-col items-center justify-center p-4 fade-in";
+
+            if (gameState === 'start') renderStart();
+            else if (gameState === 'playing') renderPlaying();
+            else if (gameState === 'summary') renderSummary();
+        }
+
+        function renderStart() {
+            container.innerHTML = `
+                <div class="bg-white p-10 rounded-2xl shadow-sm border border-slate-200 max-w-xl text-center">
+                    <div class="mb-6 flex justify-center text-emerald-600">
+                        <i class="ph ph-activity text-6xl"></i>
+                    </div>
+                    <h1 class="text-3xl font-bold text-slate-900 mb-2">Public Health Data Sources</h1>
+                    <p class="text-slate-500 text-lg mb-8">
+                        Test your knowledge on KHIS, KDHS, CRVS, and data quality issues.
+                    </p>
+                    <button onclick="startQuiz()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-8 rounded-lg shadow-md transition-all flex items-center gap-2 mx-auto">
+                        Start Quiz <i class="ph ph-arrow-right text-lg"></i>
+                    </button>
+                    <div class="mt-6 text-sm text-slate-400">${quizQuestions.length} Questions</div>
+                </div>
+            `;
+        }
+
+        function renderPlaying() {
+            const q = quizQuestions[currentQuestionIndex];
+            const progress = ((currentQuestionIndex + 1) / quizQuestions.length) * 100;
+
+            let optionsHtml = q.options.map((opt, idx) => {
+                let cssClass = "border-slate-200 hover:border-emerald-500 hover:bg-emerald-50 cursor-pointer text-slate-700";
+                let icon = "";
+
+                if (isAnswered) {
+                    // Logic for coloring options after answer
+                    if (selectedOption && selectedOption.id === opt.id) {
+                        // This is what the user clicked
+                        cssClass = opt.isCorrect ? "border-emerald-500 bg-emerald-50 text-emerald-800" : "border-rose-500 bg-rose-50 text-rose-800";
+                        icon = opt.isCorrect ? '<i class="ph ph-check-circle text-emerald-500 text-xl"></i>' : '<i class="ph ph-x-circle text-rose-500 text-xl"></i>';
+                    } else if (opt.isCorrect) {
+                        // Highlight correct answer if user missed it
+                        cssClass = "border-emerald-500 bg-emerald-50 text-emerald-800 opacity-70";
+                        icon = '<i class="ph ph-check-circle text-emerald-500 text-xl"></i>';
+                    } else {
+                        // Fade other options
+                        cssClass = "border-slate-200 text-slate-400 opacity-50";
+                    }
+                }
+
+                // Note: passing 'this' logic via index
+                return `
+                    <div onclick="handleAnswer(${idx})" class="p-4 border rounded-lg transition-all flex justify-between items-center mb-3 ${cssClass}">
+                        <span class="font-medium">${opt.text}</span>
+                        ${icon}
+                    </div>
+                `;
+            }).join('');
+
+            let feedbackHtml = '';
+            if (isAnswered) {
+                const isCorrect = selectedOption.isCorrect;
+                feedbackHtml = `
+                    <div class="mt-8 pt-6 border-t border-slate-100 fade-in">
+                        <p class="font-bold text-slate-900 mb-1">${isCorrect ? "Correct!" : "Explanation:"}</p>
+                        <p class="text-slate-600 mb-6">${q.rationale}</p>
+                        <button onclick="nextQuestion()" class="bg-slate-900 text-white font-medium py-2 px-6 rounded-lg hover:bg-slate-800 transition-all flex items-center gap-2 ml-auto">
+                            ${currentQuestionIndex < quizQuestions.length - 1 ? "Next" : "Finish"} <i class="ph ph-arrow-right"></i>
+                        </button>
+                    </div>
+                `;
+            }
+
+            let hintHtml = (q.hint && !isAnswered) ? `
+                <div class="text-sm text-sky-600 bg-sky-50 px-3 py-2 rounded-lg inline-flex items-center gap-2 mb-6">
+                    <i class="ph ph-warning-circle text-lg"></i> Hint: ${q.hint}
+                </div>
+            ` : '';
+
+            container.innerHTML = `
+                <div class="max-w-2xl w-full">
+                    <div class="flex justify-between items-end mb-4 text-sm font-medium text-slate-500">
+                        <span>Question ${currentQuestionIndex + 1} of ${quizQuestions.length}</span>
+                        <span class="text-emerald-600">Score: ${score}</span>
+                    </div>
+                    <div class="w-full bg-slate-200 rounded-full h-2 mb-6">
+                        <div class="bg-emerald-500 h-2 rounded-full transition-all duration-300" style="width: ${progress}%"></div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8">
+                        <h3 class="text-xl font-bold text-slate-900 mb-6">${q.question}</h3>
+                        ${hintHtml}
+                        <div class="space-y-0">
+                            ${optionsHtml}
+                        </div>
+                        ${feedbackHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderSummary() {
+            let message = score > 7 ? "Excellent work! You've mastered data sources." : "Review the lecture notes and try again.";
+            container.innerHTML = `
+                <div class="max-w-xl w-full text-center">
+                    <div class="bg-white p-10 rounded-2xl shadow-sm border border-slate-200">
+                        <div class="mb-6 flex justify-center text-yellow-500"><i class="ph ph-trophy text-6xl"></i></div>
+                        <h2 class="text-3xl font-bold text-slate-900 mb-2">Quiz Complete</h2>
+                        <div class="text-6xl font-black text-emerald-600 mb-4">${score} <span class="text-3xl text-slate-300">/ {quizQuestions.length}</span></div>
+                        <p class="text-slate-500 mb-8">${message}</p>
+                        <button onclick="startQuiz()" class="text-emerald-600 font-semibold hover:text-emerald-700 flex items-center justify-center gap-2 mx-auto">
+                            <i class="ph ph-arrow-counter-clockwise text-lg"></i> Retake Quiz
+                        </button>
+                        <div class="mt-8 pt-8 border-t border-slate-100">
+                            <a href="index.html" class="text-slate-400 hover:text-slate-600 text-sm font-medium">Return to Course Portal</a>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- ACTIONS ---
+        window.startQuiz = function() {
+            gameState = 'playing';
+            score = 0;
+            currentQuestionIndex = 0;
+            selectedOption = null;
+            isAnswered = false;
+            render();
+        }
+
+        window.handleAnswer = function(optIndex) {
+            if (isAnswered) return; // Prevent double clicking
+            
+            selectedOption = quizQuestions[currentQuestionIndex].options[optIndex];
+            isAnswered = true;
+            
+            if (selectedOption.isCorrect) {
+                score++;
+            }
+            render();
+        }
+
+        window.nextQuestion = function() {
+            if (currentQuestionIndex < quizQuestions.length - 1) {
+                currentQuestionIndex++;
+                selectedOption = null;
+                isAnswered = false;
+            } else {
+                gameState = 'summary';
+            }
+            render();
+        }
+
+        // Init
+        render();
+
+    </script>
+</body>
+</html>
